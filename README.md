@@ -1,88 +1,61 @@
-# MultiPDF Chat App
+# PDFChat Project
 
-> Lets chat with your PDFs documents
+PDFChat is a Streamlit application that allows users to interact with multiple PDF documents through a conversational interface. The application processes uploaded PDF files, extracts their text, and enables users to ask questions about the content using a local Hugging Face model.
 
-## Introduction
+## Project Structure
 
-The MultiPDF Chat App is a Python application that allows you to chat with multiple PDF documents. You can ask questions about the PDFs using natural language, and the application will provide relevant responses based on the content of the documents. This app utilizes a language model to generate accurate answers to your queries. Please note that the app will only respond to questions related to the loaded PDFs.
+```
+PDFChat
+├── models
+│   └── huggingface_model
+│       └── [downloaded_model_files]
+├── src
+│   ├── app.py
+│   ├── htmlTemplates.py
+│   └── utils
+│       ├── __init__.py
+│       ├── pdf_processing.py
+│       ├── text_processing.py
+│       └── model_loading.py
+├── requirements.txt
+├── .env
+└── README.md
+```
 
-## How It Works
+## Installation
 
-![MultiPDF Chat App Diagram](./docs/PDF-LangChain.jpg)
+1. Clone the repository:
+   ```
+   git clone <repository-url>
+   cd PDFChat
+   ```
 
-The application follows these steps to provide responses to your questions:
+2. Install the required dependencies:
+   ```
+   pip install -r requirements.txt
+   ```
 
-1.  **PDF Loading:** The app reads multiple PDF documents and extracts their text content.
-2.  **Text Chunking:** The extracted text is divided into smaller chunks that can be processed effectively.
-3.  **Language Model:** The application utilizes a language model to generate vector representations (embeddings) of the text chunks.
-4.  **Similarity Matching:** When you ask a question, the app compares it with the text chunks and identifies the most semantically similar ones.
-5.  **Response Generation:** The selected chunks are passed to the language model, which generates a response based on the relevant content of the PDFs.
+3. Download the necessary Hugging Face model and place it in the `models/huggingface_model` directory.
 
-## API Options
-
-This application has been implemented with two different API options for generating embeddings: Hugging Face and OpenAI API.
-
-### Hugging Face
-
-* **Details:** Uses local Hugging Face models for generating embeddings.
-* **Pros:**
-    * Provides full control over the embedding model.
-    * Allows customization and fine-tuning of the model.
-    * Open-source options available, reducing API costs.
-* **Cons:**
-    * Significantly slower embedding generation (e.g., up to 10 minutes for a large dataset).
-    * Requires substantial computational resources.
-    * May require manual optimization for performance.
-
-### OpenAI API
-
-* **Details:** Uses OpenAI's API for generating embeddings.
-* **Pros:**
-    * Extremely fast embedding generation (e.g., approximately 4 seconds).
-    * Leverages OpenAI's optimized infrastructure.
-    * Easy to use and integrate.
-* **Cons:**
-    * Incurs API usage costs.
-    * Less control over the embedding model.
-
-**Note:** You can switch between these API options by modifying the configuration in the code (provide specific instruction if necessary). When using the OpenAI API, ensure that you have configured your API key correctly in the `.env` file.
-
-## Dependencies and Installation
-
-To install the MultiPDF Chat App, please follow these steps:
-
-1.  Clone the repository to your local machine.
-
-2.  Install the required dependencies by running the following command:
-
-    ```
-    pip install -r requirements.txt
-    ```
-
-3.  Obtain an API key from OpenAI and add it to the `.env` file in the project directory.
-
-    ```commandline
-    OPENAI_API_KEY=your_secret_api_key
-    ```
+4. Set up your environment variables in the `.env` file as needed.
 
 ## Usage
 
-To use the MultiPDF Chat App, follow these steps:
+1. Run the application:
+   ```
+   streamlit run src/app.py
+   ```
 
-1.  Ensure that you have installed the required dependencies and added the OpenAI API key to the `.env` file (if using OpenAI API).
+2. Open your web browser and navigate to `http://localhost:8501`.
 
-2.  Run the `app.py` file using the Streamlit CLI. Execute the following command:
+3. Upload your PDF documents using the file uploader in the sidebar.
 
-    ```
-    streamlit run app.py
-    ```
+4. Ask questions about the content of the PDFs in the input box and receive responses from the model.
 
-3.  The application will launch in your default web browser, displaying the user interface.
+## Contributing
 
-4.  Load multiple PDF documents into the app by following the provided instructions.
-
-5.  Ask questions in natural language about the loaded PDFs using the chat interface.
+Contributions are welcome! Please feel free to submit a pull request or open an issue for any suggestions or improvements.
 
 ## License
 
-The MultiPDF Chat App is released under the [MIT License](https://opensource.org/licenses/MIT).
+This project is licensed under the MIT License. See the LICENSE file for more details.
