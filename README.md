@@ -28,7 +28,7 @@ This application has been implemented with two different API options for generat
 * **Pros:**
     * Provides full control over the embedding model.
     * Allows customization and fine-tuning of the model.
-    * Ofcourse it is **FREE**
+    * Ofcoure it is **FREE**
 * **Cons:**
     * Significantly slower embedding generation (e.g., up to 10 minutes for a large dataset).
     * Requires substantial computational resources.
