@@ -129,6 +129,7 @@ env.bak/
 venv.bak/
 chatwithpdf/
 chatpdf/
+pdfchat/
 
 # Spyder project settings
 .spyderproject

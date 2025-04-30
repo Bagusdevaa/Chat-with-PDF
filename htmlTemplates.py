@@ -1,118 +1,44 @@
 css = '''
 <style>
-.chat-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 10px;
-    max-height: 60vh;
-    overflow-y: auto;
-    border-radius: 10px;
-    background-color: #f9f9f9;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
 .chat-message {
-    display: flex;
-    padding: 1.5rem;
-    border-radius: 0.8rem;
-    margin-bottom: 10px;
-    position: relative;
-    animation: fadeIn 0.5s;
+    padding: 1.5rem; border-radius: 0.5rem; margin-bottom: 1rem; display: flex
 }
-
 .chat-message.user {
-    background-color: #2b313e;
-    color: #fff;
-    border-bottom-right-radius: 0;
-    margin-left: 40px;
-    margin-right: 10px;
+    background-color: #2b313e
 }
-
 .chat-message.bot {
-    background-color: #475063;
-    color: #fff;
-    border-bottom-left-radius: 0;
-    margin-right: 40px;
-    margin-left: 10px;
+    background-color: #475063
 }
-
 .chat-message .avatar {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    object-fit: cover;
-    position: absolute;
-    top: -15px;
+  width: 20%;
 }
-
-.chat-message.user .avatar {
-    right: -15px;
-    background-color: #2b313e;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.chat-message .avatar img {
+  max-width: 78px;
+  max-height: 78px;
+  border-radius: 50%;
+  object-fit: cover;
 }
-
-.chat-message.bot .avatar {
-    left: -15px;
-    background-color: #475063;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .chat-message .message {
-    width: 100%;
-    padding: 0;
-    color: #fff;
+  width: 80%;
+  padding: 0 1.5rem;
+  color: #fff;
 }
-
-.chat-message .time {
-    font-size: 0.7rem;
-    color: rgba(255,255,255,0.7);
-    margin-top: 5px;
-    text-align: right;
-}
-
-/* Animasi untuk pesan baru */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.stTextInput {
-    position: sticky;
-    bottom: 0;
-    background-color: white;
-    padding: 10px 0;
-    z-index: 100;
-}
-
-/* Tombol process lebih menonjol */
-.stButton button {
-    width: 100%;
-    background-color: #4CAF50 !important;
-    color: white !important;
-    font-weight: bold !important;
-}
-
-</style>
-'''
-
-user_template = '''
-<div class="chat-message user">
-    <div class="avatar">👤</div>
-    <div class="message">{{MSG}}</div>
-    <div class="time">{{TIME}}</div>
-</div>
 '''
 
 bot_template = '''
 <div class="chat-message bot">
-    <div class="avatar">🤖</div>
+    <div class="avatar">
+        <img src="https://i.ibb.co/cN0nmSj/Screenshot-2023-05-28-at-02-37-21.png" style="max-height: 78px; max-width: 78px; border-radius: 50%; object-fit: cover;">
+    </div>
     <div class="message">{{MSG}}</div>
-    <div class="time">{{TIME}}</div>
+</div>
+'''
+
+user_template = '''
+<div class="chat-message user">
+    <div class="avatar">
+        <img src="https://i.ibb.co/rdZC7LZ/Photo-logo-1.png">
+    </div>    
+    <div class="message">{{MSG}}</div>
 </div>
 '''
