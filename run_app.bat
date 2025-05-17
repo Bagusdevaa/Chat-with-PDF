@@ -1,0 +1,3 @@
+@echo off
+echo Memulai PDF Chat Assistant...
+python server.py
