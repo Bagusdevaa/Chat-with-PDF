@@ -11,8 +11,7 @@ let pdfName = null;
 let canvas = null;
 let ctx = null;
 
-document.addEventListener('DOMContentLoaded', function() {
-    // DOM elements
+document.addEventListener('DOMContentLoaded', function() {    // DOM elements
     const pdfUploadForm = document.getElementById('pdfUploadForm');
     const pdfFileInput = document.getElementById('pdfFileInput');
     const dropzone = document.getElementById('dropzone');
@@ -26,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const loadingOverlay = document.getElementById('loadingOverlay');
     const loadingMessage = document.getElementById('loadingMessage');
     const testServerBtn = document.getElementById('testServerBtn');
+    const clearChat = document.getElementById('clearChat');
     const pdfFileName = document.getElementById('pdfFileName');
     const chatMessages = document.getElementById('chatMessages');
     const chatForm = document.getElementById('chatForm');
@@ -196,10 +196,27 @@ document.addEventListener('DOMContentLoaded', function() {
             uploadSection.classList.remove('d-none');
         });
     }
-    
-    function renderPage(pageNumber) {
+      function renderPage(pageNumber) {
         pdfDoc.getPage(pageNumber).then(function(page) {
-            const viewport = page.getViewport({ scale: zoomLevel });
+            // Calculate scale to fit canvas within container
+            const pdfContentDiv = document.querySelector('.pdf-content');
+            const containerWidth = pdfContentDiv.clientWidth;
+            const containerHeight = pdfContentDiv.clientHeight;
+            
+            const originalViewport = page.getViewport({ scale: 1.0 });
+            
+            // Calculate scale to fit width with some padding
+            const scaleWidth = (containerWidth - 40) / originalViewport.width;
+            // Calculate scale to fit height with some padding
+            const scaleHeight = (containerHeight - 40) / originalViewport.height;
+            
+            // Use the smaller scale to ensure page fits both dimensions
+            const optimalScale = Math.min(scaleWidth, scaleHeight);
+            
+            // Apply zoom level on top of optimal scale
+            const finalScale = optimalScale * zoomLevel;
+            
+            const viewport = page.getViewport({ scale: finalScale });
             
             canvas.height = viewport.height;
             canvas.width = viewport.width;
@@ -209,13 +226,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 viewport: viewport
             };
             
-            page.render(renderContext);
+            // Show a loading spinner while rendering
+            const renderTask = page.render(renderContext);
             
-            currentPageElement.textContent = `Halaman ${pageNumber} dari ${pdfDoc.numPages}`;
-            
-            // Enable/disable navigation buttons
-            prevPage.disabled = pageNumber <= 1;
-            nextPage.disabled = pageNumber >= pdfDoc.numPages;
+            renderTask.promise.then(function() {
+                console.log(`Page ${pageNumber} rendered successfully`);
+                
+                // Update page info
+                currentPageElement.textContent = `Halaman ${pageNumber} dari ${pdfDoc.numPages}`;
+                
+                // Enable/disable navigation buttons
+                prevPage.disabled = pageNumber <= 1;
+                nextPage.disabled = pageNumber >= pdfDoc.numPages;
+            }).catch(function(error) {
+                console.error('Error rendering page:', error);
+            });
         });
     }
     
@@ -266,13 +291,28 @@ document.addEventListener('DOMContentLoaded', function() {
         chatMessages.innerHTML += html;
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
-    
-    function addBotMessage(message, responseTime = null) {
+      function addBotMessage(message, responseTime = null) {
         const time = formatTimestamp();
         let footer = '';
         
         if (responseTime) {
-            footer = `<div class="message-footer">Response time: ${responseTime} detik</div>`;
+            footer = `
+                <div class="message-footer">
+                    <span>Response time: ${responseTime} detik</span>
+                    <div class="message-actions">
+                        <button title="Copy to clipboard" class="copy-btn"><i class="fas fa-copy"></i></button>
+                    </div>
+                </div>
+            `;
+        } else {
+            footer = `
+                <div class="message-footer">
+                    <span></span>
+                    <div class="message-actions">
+                        <button title="Copy to clipboard" class="copy-btn"><i class="fas fa-copy"></i></button>
+                    </div>
+                </div>
+            `;
         }
         
         const html = `
@@ -287,6 +327,23 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         chatMessages.innerHTML += html;
         chatMessages.scrollTop = chatMessages.scrollHeight;
+        
+        // Add event listeners to all copy buttons
+        document.querySelectorAll('.copy-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const messageContent = this.closest('.message').querySelector('.message-content').textContent;
+                navigator.clipboard.writeText(messageContent).then(() => {
+                    // Show temporary tooltip or change icon
+                    const icon = this.querySelector('i');
+                    icon.classList.remove('fa-copy');
+                    icon.classList.add('fa-check');
+                    setTimeout(() => {
+                        icon.classList.remove('fa-check');
+                        icon.classList.add('fa-copy');
+                    }, 1500);
+                });
+            });
+        });
     }
     
     function showTypingIndicator() {

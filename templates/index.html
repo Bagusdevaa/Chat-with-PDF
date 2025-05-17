@@ -56,16 +56,15 @@
             
             <!-- Main Content (shown after PDF is loaded) - Initially Hidden -->
             <div class="main-content row h-100 d-none" id="mainContent">
-                <!-- Left Side: PDF Viewer -->
-                <div class="col-md-7 h-100 pdf-container" id="pdfViewerContainer">
+                <!-- Left Side: PDF Viewer -->                <div class="col-md-7 h-100 pdf-container" id="pdfViewerContainer">
                     <div class="pdf-header">
                         <h4 id="pdfFileName">Document.pdf</h4>
                         <div class="pdf-controls">
-                            <button id="prevPage" class="btn btn-sm btn-outline-light">
+                            <button id="prevPage" class="btn btn-sm btn-outline-light" disabled>
                                 <i class="fas fa-chevron-left"></i>
                             </button>
                             <span id="currentPage">Page 1 of 1</span>
-                            <button id="nextPage" class="btn btn-sm btn-outline-light">
+                            <button id="nextPage" class="btn btn-sm btn-outline-light" disabled>
                                 <i class="fas fa-chevron-right"></i>
                             </button>
                             <button id="zoomIn" class="btn btn-sm btn-outline-light">
@@ -74,18 +73,27 @@
                             <button id="zoomOut" class="btn btn-sm btn-outline-light">
                                 <i class="fas fa-search-minus"></i>
                             </button>
+                            <button id="downloadPdf" class="btn btn-sm btn-outline-light ms-2">
+                                <i class="fas fa-download"></i>
+                            </button>
                         </div>
                     </div>
-                    <canvas id="pdfCanvas"></canvas>
+                    <div class="pdf-content">
+                        <canvas id="pdfCanvas"></canvas>
+                    </div>
                 </div>
                 
                 <!-- Right Side: Chat Interface -->
-                <div class="col-md-5 h-100 chat-container">
-                    <div class="chat-header">
+                <div class="col-md-5 h-100 chat-container">                <div class="chat-header">
                         <h4><i class="fas fa-robot me-2"></i>AI Assistant</h4>
-                        <button class="btn btn-sm btn-outline-light" id="closeChat">
-                            <i class="fas fa-times"></i>
-                        </button>
+                        <div class="d-flex">
+                            <button class="btn btn-sm btn-outline-light me-2" id="toggleDarkMode" title="Toggle dark/light mode">
+                                <i class="fas fa-moon"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-light" id="closeChat">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
                     </div>
                     
                     <div class="chat-messages" id="chatMessages">
@@ -116,10 +124,9 @@
             </div>
             <p id="loadingMessage">Memproses dokumen...</p>
         </div>
-    </div>
-
-    <!-- Bootstrap and Custom JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    </div>    <!-- Bootstrap and Custom JavaScript -->    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/export_functions.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/theme_toggle.js') }}"></script>
 </body>
 </html>
