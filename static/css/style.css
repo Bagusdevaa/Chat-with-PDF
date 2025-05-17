@@ -1,33 +1,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 :root {
-    /* Dark theme colors (default) */
-    --primary-color: #8D6E63;
-    --primary-light: #A67F5D;
-    --primary-dark: #5D4037;
-    --secondary-color: #D2B48C;
-    --text-light: #FFF8DC;
-    --dark-bg: #1E1511;
-    --dark-bg-lighter: #3C2A21;
+    /* Dark theme colors (default) - Purple Gradation */
+    --primary-color: #7E57C2; /* Main purple */
+    --primary-light: #9575CD; /* Lighter purple */
+    --primary-dark: #5E35B1; /* Darker purple */
+    --secondary-color: #B39DDB; /* Accent purple */
+    --text-light: #F3E5F5; /* Light text for dark background */
+    --dark-bg: #1A1A2E; /* Dark blue-purple background */
+    --dark-bg-lighter: #2D2D42; /* Slightly lighter dark background */
     --success-color: #4CAF50;
     --danger-color: #FF5252;
     --gradient-bg: linear-gradient(135deg, var(--dark-bg-lighter) 0%, var(--dark-bg) 100%);
-    --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-    --pdf-bg: #333333;
+    --gradient-primary: linear-gradient(135deg, #7E57C2 0%, #5E35B1 100%);
+    --pdf-bg: #232336; /* Darker purple-blue for PDF viewer */
 }
 
-/* Light theme colors */
+/* Light theme colors - Purple Gradation */
 :root[data-theme="light"] {
-    --primary-color: #A67F5D;
-    --primary-light: #D2B48C;
-    --primary-dark: #8D6E63;
-    --secondary-color: #5D4037;
-    --text-light: #3C2A21;
-    --dark-bg: #F5F5F5;
-    --dark-bg-lighter: #E0E0E0;
-    --gradient-bg: linear-gradient(135deg, #F5F5F5 0%, #E0E0E0 100%);
-    --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
-    --pdf-bg: #EAEAEA;
+    --primary-color: #9575CD; /* Main purple (lighter) */
+    --primary-light: #B39DDB; /* Even lighter purple */
+    --primary-dark: #7E57C2; /* Darker purple */
+    --secondary-color: #5E35B1; /* Accent color */
+    --text-light: #311B92; /* Dark purple text for light background */
+    --dark-bg: #F5F5FC; /* Very light purple background */
+    --dark-bg-lighter: #E8E4F3; /* Light purple background */
+    --gradient-bg: linear-gradient(135deg, #F5F5FC 0%, #E8E4F3 100%);
+    --gradient-primary: linear-gradient(135deg, #9575CD 0%, #B39DDB 100%);
+    --pdf-bg: #EEEEF7; /* Light purple-white for PDF viewer */
 }
 
 body, html {
@@ -45,7 +45,7 @@ body, html {
     background: var(--gradient-bg);
     border-radius: 15px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(141, 110, 99, 0.2);
+    border: 1px solid rgba(179, 157, 219, 0.2);
 }
 
 .logo-container {
@@ -56,7 +56,7 @@ body, html {
     padding: 3rem;
     border: 2px dashed var(--primary-light);
     border-radius: 12px;
-    background: rgba(93, 64, 55, 0.3);
+    background: rgba(126, 87, 194, 0.1);
     text-align: center;
     transition: all 0.3s ease;
     cursor: pointer;
@@ -64,7 +64,7 @@ body, html {
 }
 
 .custom-dropzone:hover, .custom-dropzone.active {
-    background: rgba(93, 64, 55, 0.5);
+    background: rgba(126, 87, 194, 0.2);
     border-color: var(--secondary-color);
 }
 
@@ -87,7 +87,7 @@ body, html {
 .file-preview {
     display: flex;
     align-items: center;
-    background: rgba(93, 64, 55, 0.7);
+    background: rgba(126, 87, 194, 0.3);
     padding: 0.75rem 1rem;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
@@ -123,7 +123,7 @@ body, html {
     display: flex;
     flex-direction: column;
     padding: 0;
-    border-right: 1px solid rgba(141, 110, 99, 0.3);
+    border-right: 1px solid rgba(179, 157, 219, 0.3);
     height: 100vh;
     overflow: hidden;
     position: relative;
@@ -134,8 +134,7 @@ body, html {
     justify-content: space-between;
     align-items: center;
     padding: 0.75rem 1.5rem;
-    background: var(--dark-bg-lighter);
-    border-bottom: 1px solid rgba(141, 110, 99, 0.3);
+    background: var(--dark-bg-lighter);    border-bottom: 1px solid rgba(179, 157, 219, 0.3);
     height: 60px;
     position: sticky;
     top: 0;
@@ -197,7 +196,7 @@ body, html {
     justify-content: space-between;
     align-items: center;
     background: var(--gradient-primary);
-    border-bottom: 1px solid rgba(210, 180, 140, 0.3);
+    border-bottom: 1px solid rgba(179, 157, 219, 0.3);
     position: sticky;
     top: 0;
     z-index: 10;
@@ -232,24 +231,22 @@ body, html {
 
 .chat-input {
     padding: 1rem;
-    border-top: 1px solid rgba(141, 110, 99, 0.3);
+    border-top: 1px solid rgba(179, 157, 219, 0.3);
     background: var(--dark-bg-lighter);
     position: sticky;
     bottom: 0;
     z-index: 5;
 }
 
-.chat-input .form-control {
-    background-color: rgba(93, 64, 55, 0.4);
+.chat-input .form-control {    background-color: rgba(126, 87, 194, 0.15);
     border: 1px solid var(--primary-color);
     color: var(--text-light);
     transition: all 0.3s ease;
 }
 
-.chat-input .form-control:focus {
-    background-color: rgba(93, 64, 55, 0.6);
+.chat-input .form-control:focus {    background-color: rgba(126, 87, 194, 0.25);
     border-color: var(--secondary-color);
-    box-shadow: 0 0 0 0.25rem rgba(210, 180, 140, 0.25);
+    box-shadow: 0 0 0 0.25rem rgba(179, 157, 219, 0.25);
 }
 
 .chat-input .btn {
@@ -280,19 +277,21 @@ body, html {
 }
 
 .message.user {
-    background: linear-gradient(135deg, #5D4037 0%, #4A332D 100%);
+    background: linear-gradient(135deg, #7E57C2 0%, #5E35B1 100%);
     align-self: flex-end;
     border-bottom-right-radius: 0;
-    border: 1px solid rgba(141, 110, 99, 0.2);
+    border: 1px solid rgba(179, 157, 219, 0.2);
     margin-left: 50px;
+    box-shadow: 0 3px 8px rgba(94, 53, 177, 0.2);
 }
 
 .message.bot {
-    background: linear-gradient(135deg, #8D6E63 0%, #7D5E53 100%);
+    background: linear-gradient(135deg, #9575CD 0%, #7E57C2 100%);
     align-self: flex-start;
     border-bottom-left-radius: 0;
-    border: 1px solid rgba(210, 180, 140, 0.2);
+    border: 1px solid rgba(179, 157, 219, 0.3);
     margin-right: 50px;
+    box-shadow: 0 3px 8px rgba(94, 53, 177, 0.2);
 }
 
 .message-header {
@@ -301,7 +300,7 @@ body, html {
     align-items: center;
     margin-bottom: 0.8rem;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid rgba(210, 180, 140, 0.2);
+    border-bottom: 1px solid rgba(179, 157, 219, 0.2);
 }
 
 .message-header strong {
@@ -309,8 +308,7 @@ body, html {
     font-weight: 600;
 }
 
-.message-header small {
-    color: rgba(255, 248, 220, 0.6);
+.message-header small {    color: rgba(243, 229, 245, 0.6);
     font-size: 0.75rem;
 }
 
@@ -332,8 +330,7 @@ body, html {
     padding-top: 0.5rem;
     font-size: 0.75rem;
     color: var(--secondary-color);
-    text-align: right;
-    border-top: 1px solid rgba(210, 180, 140, 0.2);
+    text-align: right;    border-top: 1px solid rgba(179, 157, 219, 0.2);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -427,8 +424,7 @@ body, html {
     width: 8px;
 }
 
-::-webkit-scrollbar-track {
-    background: rgba(45, 32, 22, 0.6);
+::-webkit-scrollbar-track {    background: rgba(94, 53, 177, 0.2);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -451,8 +447,7 @@ body, html {
         height: 50vh;
     }
     
-    .pdf-container {
-        border-right: none;
-        border-bottom: 1px solid rgba(141, 110, 99, 0.3);
+    .pdf-container {        border-right: none;
+        border-bottom: 1px solid rgba(179, 157, 219, 0.3);
     }
 }
