@@ -68,3 +68,5 @@ $RECYCLE.BIN/
 .coverage
 htmlcov/
 node_modules/
+app.py
+htmlTemplates.py
