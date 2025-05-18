@@ -1,8 +1,9 @@
-langchain==0.0.184
+langchain==0.0.267
+langchain-community==0.0.10
 PyPDF2==3.0.1
 python-dotenv==1.0.0
 flask==2.3.3
-openai==0.27.6
+openai==0.27.8
 faiss-cpu==1.7.4
 tiktoken==0.4.0
 # uncomment to use huggingface llms

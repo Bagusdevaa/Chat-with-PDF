@@ -11,7 +11,8 @@ let pdfName = null;
 let canvas = null;
 let ctx = null;
 
-document.addEventListener('DOMContentLoaded', function() {    // DOM elements
+document.addEventListener('DOMContentLoaded', function() {
+    // DOM elements
     const pdfUploadForm = document.getElementById('pdfUploadForm');
     const pdfFileInput = document.getElementById('pdfFileInput');
     const dropzone = document.getElementById('dropzone');
@@ -29,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {    // DOM elements
     const pdfFileName = document.getElementById('pdfFileName');
     const chatMessages = document.getElementById('chatMessages');
     const chatForm = document.getElementById('chatForm');
-    const userQuestion = document.getElementById('userQuestion');
+    const userQuestion = document.getElementById('userQuestion');    
     const closeChat = document.getElementById('closeChat');
     const prevPage = document.getElementById('prevPage');
     const nextPage = document.getElementById('nextPage');
@@ -37,7 +38,9 @@ document.addEventListener('DOMContentLoaded', function() {    // DOM elements
     const zoomIn = document.getElementById('zoomIn');
     const zoomOut = document.getElementById('zoomOut');
     canvas = document.getElementById('pdfCanvas');
-    ctx = canvas.getContext('2d');    // Event Listeners
+    ctx = canvas.getContext('2d');
+    
+    // Event Listeners
     
     // Test server connection
     testServerBtn.addEventListener('click', function() {
@@ -120,14 +123,14 @@ document.addEventListener('DOMContentLoaded', function() {    // DOM elements
             uploadError.classList.remove('d-none');
             return;
         }
-        
         // Show loading overlay
         loadingOverlay.classList.remove('d-none');
         loadingMessage.textContent = 'Memproses dokumen...';
         
         const formData = new FormData();
         formData.append('pdf_file', file);
-          fetch('/upload', {
+        
+        fetch('/api/upload', {
             method: 'POST',
             body: formData
         })
@@ -166,13 +169,17 @@ document.addEventListener('DOMContentLoaded', function() {    // DOM elements
             uploadError.textContent = `Error: ${error.message}`;
             uploadError.classList.remove('d-none');
         });
-    }    function loadPDF(url) {
+    }
+    
+    function loadPDF(url) {
         console.log("Loading PDF from:", url);
         
-        // Add debugging info to the page
-        addBotMessage(`Attempting to load PDF from: ${url}`);
+        // Ensure the URL is properly formatted for PDF.js and add cache-busting
+        const fullUrl = new URL(url, window.location.origin).href;
+        const cacheBustUrl = `${fullUrl}?t=${new Date().getTime()}`;
+        console.log("Full PDF URL:", cacheBustUrl);
         
-        const loadingTask = pdfjsLib.getDocument(url);
+        const loadingTask = pdfjsLib.getDocument(cacheBustUrl);
         
         loadingTask.promise.then(function(pdf) {
             console.log("PDF loaded successfully with", pdf.numPages, "pages");
@@ -189,14 +196,19 @@ document.addEventListener('DOMContentLoaded', function() {    // DOM elements
             loadingOverlay.classList.add('d-none');
             
             // Add error message to chat
-            addBotMessage(`Failed to load PDF: ${error.message}. Please try uploading again.`);
-            
+            addBotMessage(`Failed to load PDF: ${error.message}. Please try uploading again.`);            
             // Revert UI to upload state if PDF loading fails
             mainContent.classList.add('d-none');
             uploadSection.classList.remove('d-none');
+            
+            // Clear session data
+            sessionId = null;
+            pdfPath = null;
+            pdfName = null;
         });
     }
-      function renderPage(pageNumber) {
+    
+    function renderPage(pageNumber) {
         pdfDoc.getPage(pageNumber).then(function(page) {
             // Calculate scale to fit canvas within container
             const pdfContentDiv = document.querySelector('.pdf-content');
@@ -291,7 +303,8 @@ document.addEventListener('DOMContentLoaded', function() {    // DOM elements
         chatMessages.innerHTML += html;
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
-      function addBotMessage(message, responseTime = null) {
+    
+    function addBotMessage(message, responseTime = null) {
         const time = formatTimestamp();
         let footer = '';
         
@@ -388,7 +401,7 @@ document.addEventListener('DOMContentLoaded', function() {    // DOM elements
         userQuestion.value = '';
         
         // Send message to server
-        fetch('/chat', {
+        fetch('/api/chat', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -418,7 +431,8 @@ document.addEventListener('DOMContentLoaded', function() {    // DOM elements
             addBotMessage(`Maaf, saya mengalami masalah saat memproses pertanyaan Anda. Error: ${error.message}`);
         });
     }
-      function resetApplication() {
+    
+    function resetApplication() {
         // Reset to initial state
         uploadSection.classList.remove('d-none');
         mainContent.classList.add('d-none');
@@ -446,7 +460,7 @@ document.addEventListener('DOMContentLoaded', function() {    // DOM elements
         uploadError.classList.add('d-none');
         
         // Try to ping the server
-        fetch('/ping')
+        fetch('/api/ping')
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
