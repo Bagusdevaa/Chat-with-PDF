@@ -1,5 +1,6 @@
 from app import db
 from datetime import datetime, timezone
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # Define the User model
 # This model represents the users table in the database
@@ -16,4 +17,10 @@ class User(db.Model):
 
     def __repr__(self):
         return f"<User {self.email}>"
+    
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+        
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 

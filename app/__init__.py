@@ -18,10 +18,13 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
 
+    # Ensure upload directory exists
+    os.makedirs(os.path.join(app.static_folder, 'uploads'), exist_ok=True)
+
     from app.models import user
     from app.routes.auth import auth
     app.register_blueprint(auth, url_prefix='/auth')
-
+    
     return app
     # Ensure upload directory exists
     # os.makedirs(os.path.join(app.static_folder, 'uploads'), exist_ok=True)

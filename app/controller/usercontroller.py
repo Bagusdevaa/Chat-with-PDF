@@ -1,41 +1,50 @@
 from flask import request
 from flask_jwt_extended import create_access_token, create_refresh_token
-
+from app.models.user import User
+import os
+from app import response, db
 
 def singleobject(data):
     data = {
         'id': data.id,
-        'name': data.name,
-        'email': data.email,
-        'level': data.level
+        'username': data.username,
+        'email': data.email
     }
     return data
 
-def login():
+def register():
     try:
+        username = request.form.get('username')
         email = request.form.get('email')
         password = request.form.get('password')
-
-        user = User.query.filter_by(email=email).first()
-        if not user:
-            return response.error_response("User not found", 404)
         
-        if not user.check_password(password):
-            return response.error_response("Invalid password", 401)
+        # Check for required fields
+        if not username:
+            return response.error_response('Username is required')
         
-        data = singleobject(user)
+        if not email:
+            return response.error_response('Email is required')
+            
+        if not password:
+            return response.error_response('Password is required')
 
-        expires = datetime.timedelta(days=1)
-        expires_refresh = datetime.timedelta(days=10)
+        # Create user object
+        user = User(
+            username = username,
+            email = email
+        )
 
-        # Use user ID as the identity (subject) for the token
-        access_token = create_access_token(identity=str(user.id), expires_delta=expires)
-        refresh_token = create_refresh_token(identity=str(user.id), expires_delta=expires_refresh)
+        user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
 
-        return response.success_response({
-            'data': data,
-            'access_token': access_token,
-            'refresh_token': refresh_token
-        }, "Login successful", 200)
+        return response.success_response('', 'Account created successfully', 200)
+
     except Exception as e:
         return response.error_response(str(e))
+
+# def login():
+#     try:
+#         pass
+#     except Exception as e:
+#         pass
