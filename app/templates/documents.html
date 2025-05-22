@@ -1,0 +1,278 @@
+{% extends "base.html" %}
+
+{% block title %}My Documents - PDF Chat Assistant{% endblock %}
+
+{% block extra_css %}
+<style>    .documents-list .card {
+        transition: all 0.3s ease;
+        border: 1px solid var(--border-color);
+        background-color: var(--card-bg);
+    }
+    
+    .documents-list .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        border-color: var(--gradient-start);
+    }
+    
+    .document-card .document-icon {
+        font-size: 2rem;
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+      .upload-area {
+        border: 2px dashed var(--border-color);
+        border-radius: 10px;
+        padding: 3rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        background-color: var(--card-bg);
+    }
+    
+    .upload-area:hover, .upload-area.dragover {
+        border-color: var(--gradient-start);
+        background-color: rgba(164, 9, 254, 0.05);
+    }
+    
+    .upload-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="documents-page py-5 min-vh-100">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1>My Documents</h1>
+            <p class="text-muted">Manage your PDF documents and conversations</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <button class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#uploadModal">
+                <i class="fas fa-upload me-2"></i>Upload New Document
+            </button>
+        </div>
+    </div>
+    
+    <!-- Document List -->
+    <div class="documents-list">
+        <div class="row g-4">            <!-- Sample Documents (these would be populated dynamically) -->
+            <div class="col-md-4">
+                <div class="card interactive h-100 document-card" data-toggle="tooltip" title="Click to view document details">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="document-icon me-3">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <h5 class="card-title mb-0">Annual Report 2025</h5>
+                        </div>
+                        <p class="card-text text-muted">Uploaded 2 days ago</p>
+                        <p class="card-text small">5 conversations • 32 pages</p>
+                        <div class="document-tags mt-2">
+                            <span class="badge bg-primary-light rounded-pill px-2 py-1 me-1">Finance</span>
+                            <span class="badge bg-secondary-light rounded-pill px-2 py-1">Report</span>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-top-0">
+                        <a href="{{ url_for('main.conversation', document_id='sample1') }}" class="btn btn-sm btn-gradient">
+                            <i class="fas fa-comments me-1"></i>Chat
+                        </a>
+                        <button class="btn btn-sm btn-outline-light ms-1" data-toggle="tooltip" title="View document details">
+                            <i class="fas fa-info-circle"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger float-end" data-toggle="tooltip" title="Delete document">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card interactive h-100 document-card" data-toggle="tooltip" title="Click to view document details">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="document-icon me-3">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <h5 class="card-title mb-0">Research Paper</h5>
+                        </div>
+                        <p class="card-text text-muted">Uploaded 1 week ago</p>
+                        <p class="card-text small">3 conversations • 15 pages</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-top-0">
+                        <a href="{{ url_for('main.conversation', document_id='sample2') }}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-comments me-1"></i>Chat
+                        </a>
+                        <button class="btn btn-sm btn-outline-light ms-1">
+                            <i class="fas fa-info-circle"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger float-end">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card bg-dark h-100 document-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="document-icon me-3">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <h5 class="card-title mb-0">User Manual</h5>
+                        </div>
+                        <p class="card-text text-muted">Uploaded 3 weeks ago</p>
+                        <p class="card-text small">10 conversations • 48 pages</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-top-0">
+                        <a href="{{ url_for('main.conversation', document_id='sample3') }}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-comments me-1"></i>Chat
+                        </a>
+                        <button class="btn btn-sm btn-outline-light ms-1">
+                            <i class="fas fa-info-circle"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger float-end">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upload Modal -->
+<div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">            <div class="modal-header border-0">
+                <h5 class="modal-title" id="uploadModalLabel">Upload New Document</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="uploadForm">
+                    <div class="upload-area mb-3" id="dropzone">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <h5>Drag & Drop PDF here</h5>
+                        <p class="text-muted">or click to browse files</p>
+                        <input type="file" id="fileInput" class="d-none" accept=".pdf">
+                    </div>
+                    <div id="fileInfo" class="d-none mb-3">
+                        <div class="d-flex align-items-center p-2 border rounded">
+                            <i class="fas fa-file-pdf me-2"></i>
+                            <span id="fileName">document.pdf</span>
+                            <button type="button" class="btn-close ms-auto" id="removeFile"></button>
+                        </div>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-gradient" id="uploadButton" disabled>
+                            <i class="fas fa-upload me-2"></i>Upload Document
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('fileInput');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+        const removeFile = document.getElementById('removeFile');
+        const uploadButton = document.getElementById('uploadButton');
+        
+        // Click on dropzone to trigger file input
+        dropzone.addEventListener('click', function() {
+            fileInput.click();
+        });
+        
+        // Handle drag events
+        ['dragover', 'dragenter'].forEach(eventName => {
+            dropzone.addEventListener(eventName, function(e) {
+                e.preventDefault();
+                dropzone.classList.add('dragover');
+            });
+        });
+        
+        ['dragleave', 'dragend', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, function(e) {
+                e.preventDefault();
+                dropzone.classList.remove('dragover');
+            });
+        });
+        
+        // Handle file drop
+        dropzone.addEventListener('drop', function(e) {
+            const files = e.dataTransfer.files;
+            if (files.length) {
+                handleFile(files[0]);
+            }
+        });
+        
+        // Handle file selection through input
+        fileInput.addEventListener('change', function() {
+            if (this.files.length) {
+                handleFile(this.files[0]);
+            }
+        });
+        
+        // Handle the selected file
+        function handleFile(file) {
+            if (file.type !== 'application/pdf') {
+                alert('Please select a PDF file.');
+                return;
+            }
+            
+            fileName.textContent = file.name;
+            fileInfo.classList.remove('d-none');
+            uploadButton.disabled = false;
+        }
+        
+        // Remove selected file
+        removeFile.addEventListener('click', function() {
+            fileInput.value = '';
+            fileInfo.classList.add('d-none');
+            uploadButton.disabled = true;
+        });
+        
+        // Handle form submission
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Here you would normally handle the file upload
+            // For this example, we'll just show a loading state and close the modal
+            
+            const originalText = uploadButton.innerHTML;
+            uploadButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Uploading...';
+            uploadButton.disabled = true;
+            
+            // Simulate upload
+            setTimeout(() => {
+                // Close modal and reset form
+                bootstrap.Modal.getInstance(document.getElementById('uploadModal')).hide();
+                uploadButton.innerHTML = originalText;
+                uploadButton.disabled = true;
+                fileInfo.classList.add('d-none');
+                fileInput.value = '';
+                
+                // In a real application, you would add the new document to the list here
+            }, 1500);
+        });
+    });
+</script>
+{% endblock %}

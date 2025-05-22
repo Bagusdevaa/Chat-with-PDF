@@ -1,0 +1,61 @@
+/**
+ * Main CSS Import File
+ * This file imports all the necessary CSS files for the PDF Chat Assistant
+ */
+
+/* Import core style file */
+@import url('./style.css');
+
+/* Import custom UI components */
+@import url('./custom-ui.css');
+@import url('./navbar.css');
+@import url('./footer.css');
+
+/* Import page-specific styles */
+@import url('./conversation.css');
+@import url('./profile.css');
+
+/* Import theme consistency fixes */
+@import url('./theme-consistency.css');
+
+/* Any additional global styles can be added below */
+
+/* Fix for potential responsive issues */
+@media (max-width: 767px) {
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+/* Animation for page transitions */
+.page-transition {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Global focus styles for accessibility */
+:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Skip to content link for accessibility */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--primary-color);
+    color: white;
+    padding: 8px;
+    z-index: 9999;
+    transition: top 0.3s;
+}
+
+.skip-link:focus {
+    top: 0;
+}

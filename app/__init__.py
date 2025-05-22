@@ -12,6 +12,25 @@ def create_app():
     # Ensure upload directory exists
     os.makedirs(os.path.join(app.static_folder, 'uploads'), exist_ok=True)
     
+    # Mock user class for templates until proper authentication is implemented
+    class MockUser:
+        @property
+        def is_authenticated(self):
+            return False
+        
+        @property
+        def username(self):
+            return "Guest"
+        
+        @property
+        def email(self):
+            return None
+    
+    # Add current_user to Jinja context
+    @app.context_processor
+    def inject_user():
+        return {'current_user': MockUser()}
+    
     # Register blueprints
     from app.routes.main import main
     from app.routes.api import api

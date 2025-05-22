@@ -1,0 +1,791 @@
+{% extends "base.html" %}
+
+{% block title %}Conversation - PDF Chat Assistant{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/conversation.css') }}">
+<style>
+    /* Layout styling */
+    .conversation-container {
+        height: calc(100vh - 140px);
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* PDF Viewer styling */
+    .pdf-viewer {
+        background-color: var(--pdf-bg);
+        border-radius: 12px;
+        height: 100%;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        position: relative;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease-in-out;
+    }    .pdf-viewer-header {
+        padding: 12px 20px;
+        border-bottom: 1px solid var(--border-color);
+        background-color: rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .pdf-content {
+        height: calc(100% - 54px);
+        overflow-y: auto;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border-color) transparent;
+    }
+
+    .pdf-content::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .pdf-content::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    
+    .pdf-content::-webkit-scrollbar-thumb {
+        background-color: var(--border-color);
+        border-radius: 6px;
+    }
+
+    .pdf-content img, .pdf-content canvas {
+        max-width: 100%;
+        height: auto;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        border-radius: 4px;
+        transition: transform 0.3s ease;
+    }
+
+    /* Chat styling */
+    .chat-container {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        background-color: var(--dark-bg-lighter);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .chat-header {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.1);
+        z-index: 2;
+        backdrop-filter: blur(5px);
+    }
+    
+    .chat-doc-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .chat-doc-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        background-color: var(--highlight-bg);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--primary-color);
+        font-size: 18px;
+    }
+    
+    .chat-doc-details h4 {
+        margin: 0 0 2px;
+        font-size: 16px;
+        font-weight: 500;
+    }
+    
+    .chat-doc-details p {
+        margin: 0;
+        font-size: 12px;
+        color: var(--text-muted);
+    }
+
+    .chat-messages {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border-color) transparent;
+        background-color: var(--dark-bg);
+        background-image: 
+            radial-gradient(circle at 25% 25%, rgba(126, 87, 194, 0.03) 0%, transparent 50%),
+            radial-gradient(circle at 75% 75%, rgba(126, 87, 194, 0.03) 0%, transparent 50%);
+    }
+    
+    .chat-messages::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .chat-messages::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    
+    .chat-messages::-webkit-scrollbar-thumb {
+        background-color: var(--border-color);
+        border-radius: 6px;
+    }
+
+    .message {
+        max-width: 85%;
+        padding: 16px 20px;
+        border-radius: 18px;
+        position: relative;
+        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.3s forwards;
+        transition: all 0.2s ease;
+        z-index: 1;
+    }
+    
+    .message:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        z-index: 2;
+    }
+
+    .message.user {
+        align-self: flex-end;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        color: white;
+        border-bottom-right-radius: 4px;
+        margin-left: 45px;
+    }
+
+    .message.bot {
+        align-self: flex-start;
+        background-color: var(--chat-bot-bubble);
+        border: 1px solid var(--border-color);
+        border-bottom-left-radius: 4px;
+        margin-right: 45px;
+    }
+    
+    .message.bot.highlight {
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% {
+            box-shadow: 0 0 0 0 rgba(126, 87, 194, 0.4);
+        }
+        50% {
+            box-shadow: 0 0 0 10px rgba(126, 87, 194, 0);
+        }
+    }
+    
+    .message.user::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        right: -10px;
+        width: 20px;
+        height: 20px;
+        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-dark) 100%);
+        clip-path: polygon(0 0, 0% 100%, 100% 100%);
+    }
+    
+    .message.bot::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: -10px;
+        width: 20px;
+        height: 20px;
+        background-color: var(--chat-bot-bubble);
+        clip-path: polygon(100% 0, 0% 100%, 100% 100%);
+        border-left: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    @keyframes fadeInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .message-time {
+        font-size: 0.7rem;
+        opacity: 0.7;
+        text-align: right;
+        margin-top: 8px;
+    }
+    
+    .message-avatar {
+        position: absolute;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        transition: all 0.2s ease;
+        z-index: 2;
+    }
+    
+    .message-avatar:hover {
+        transform: scale(1.1);
+    }
+    
+    .message.user .message-avatar {
+        background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+        bottom: 0;
+        right: -45px;
+    }
+    
+    .message.bot .message-avatar {
+        background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+        border: 1px solid var(--primary-color);
+        bottom: 0;
+        left: -45px;
+    }
+    
+    .message.bot .message-avatar i {
+        font-size: 16px;
+        color: white;
+    }
+    
+    .message.user .message-avatar i {
+        font-size: 16px;
+        color: white;
+    }
+    
+    .message-content {
+        line-height: 1.5;
+    }
+    
+    .message-typing {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+        padding: 6px 10px;
+        width: fit-content;
+        background-color: var(--chat-bot-bubble);
+        border-radius: 18px;
+        margin-left: 45px;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.3s ease;
+    }
+    
+    .message-typing.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    .typing-dot {
+        width: 8px;
+        height: 8px;
+        background-color: var(--text-muted);
+        border-radius: 50%;
+        animation: typing-animation 1.2s infinite ease-in-out;
+    }
+    
+    .typing-dot:nth-child(1) {
+        animation-delay: 0s;
+    }
+    
+    .typing-dot:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+    
+    .typing-dot:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+    
+    @keyframes typing-animation {
+        0%, 100% {
+            transform: translateY(0);
+            opacity: 0.5;
+        }
+        50% {
+            transform: translateY(-5px);
+            opacity: 1;
+        }
+    }
+    
+    .message-timestamp {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-top: 5px;
+        text-align: right;
+    }
+
+    .chat-input {
+        padding: 20px;
+        border-top: 1px solid var(--border-color);
+        background-color: var(--dark-bg-lighter);
+        backdrop-filter: blur(10px);
+        position: relative;
+        z-index: 2;
+    }
+
+    .chat-input-container {
+        position: relative;
+        transition: all 0.3s ease;
+    }
+    
+    .chat-input-container:focus-within {
+        transform: translateY(-2px);
+    }
+
+    .chat-input-container .form-control {
+        padding: 16px 60px 16px 60px;
+        background-color: var(--chat-input-bg);
+        border: 1px solid var(--border-color);
+        color: var(--text-light);
+        border-radius: 30px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(5px);
+    }
+
+    .chat-input-container .form-control:focus {
+        border-color: var(--gradient-start);
+        box-shadow: 0 0 0 0.25rem rgba(164, 9, 254, 0.2);
+    }
+    
+    .chat-input-actions {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        gap: 8px;
+    }
+    
+    .chat-input-action {
+        background: transparent;
+        border: none;
+        color: var(--text-muted);
+        padding: 0;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .chat-input-action:hover {
+        color: var(--text-light);
+        transform: scale(1.1);
+    }
+
+    .chat-input-container .btn {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+        border: none;
+        box-shadow: 0 2px 10px rgba(164, 9, 254, 0.3);
+        transition: all 0.2s ease;
+    }
+    
+    .chat-input-container .btn:hover {
+        transform: translateY(-50%) scale(1.05);
+        box-shadow: 0 4px 15px rgba(164, 9, 254, 0.4);
+    }
+    
+    .chat-input-container .btn:active {
+        transform: translateY(-50%) scale(0.98);
+    }
+    
+    .chat-input-container .btn i {
+        font-size: 18px;
+    }/* Citations */
+    .citation {
+        font-size: 0.75rem;
+        padding: 3px 8px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        margin: 0 3px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.2s ease;
+    }
+    
+    .citation:hover {
+        background-color: rgba(126, 87, 194, 0.2);
+        border-color: var(--primary-color);
+    }
+    
+    .citation:before {
+        content: "";
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        background-color: var(--primary-color);
+        border-radius: 50%;
+        margin-right: 4px;
+    }
+    
+    /* PDF page highlight effect */
+    .pdf-page-highlight {
+        position: absolute;
+        border: 2px solid var(--primary-color);
+        border-radius: 4px;
+        box-shadow: 0 0 0 4px rgba(126, 87, 194, 0.3);
+        pointer-events: none;
+        animation: highlightPulse 2s infinite;
+    }
+    
+    @keyframes highlightPulse {
+        0%, 100% {
+            opacity: 0.6;
+        }
+        50% {
+            opacity: 1;
+        }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 991.98px) {
+        .conversation-container {
+            height: auto;
+        }
+        
+        .pdf-viewer, .chat-container {
+            height: 500px;
+            margin-bottom: 20px;
+        }
+        
+        .pdf-controls-mobile {
+            display: flex !important;
+            margin-bottom: 15px;
+            background: var(--dark-bg-lighter);
+            border-radius: 12px;
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .message {
+            max-width: 90%;
+        }
+        
+        .message.user {
+            margin-left: 20px;
+        }
+        
+        .message.bot {
+            margin-right: 20px;
+        }
+    }
+    
+    /* Loader animation */
+    .thinking {
+        display: inline-flex;
+        gap: 6px;
+        align-items: center;
+        padding: 12px 16px;
+        background-color: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-color);
+        border-radius: 18px;
+        border-bottom-left-radius: 5px;
+        max-width: 85%;
+        align-self: flex-start;
+        margin-right: 40px;
+        animation: fadeIn 0.3s forwards;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    .thinking .dot {
+        width: 10px;
+        height: 10px;
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        border-radius: 50%;
+        animation: typingPulse 1.5s infinite ease-in-out;
+    }
+    
+    .thinking .dot:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+    
+    .thinking .dot:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+    
+    @keyframes typingPulse {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-8px);
+        }
+    }
+      /* Toolbar below chat input */
+    .chat-toolbar {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 12px;
+        padding: 0 10px;
+    }
+    
+    .chat-tools-right {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .chat-tool-btn {
+        background: transparent;
+        border: none;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        padding: 5px 10px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+    
+    .chat-tool-btn:hover {
+        color: var(--primary-color);
+        background-color: var(--highlight-bg);
+    }
+    
+    .chat-tool-btn.active {
+        color: var(--primary-color);
+        background-color: var(--highlight-bg);
+    }
+    
+    .chat-tool-btn i {
+        margin-right: 6px;
+    }
+    
+    /* Suggested questions pills */
+    .suggested-questions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 15px;
+        padding: 0 15px;
+    }
+    
+    .suggested-question {
+        background-color: var(--highlight-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        padding: 6px 12px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: var(--text-muted);
+    }
+    
+    .suggested-question:hover {
+        background-color: var(--dark-bg-lighter);
+        color: var(--primary-color);
+        border-color: var(--primary-color);
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="py-4">
+    <!-- Mobile PDF Controls (visible only on small screens) -->
+    <div class="pdf-controls-mobile d-none mb-4 justify-content-between align-items-center">
+        <h5 class="mb-0">Document View</h5>
+        <div class="btn-group">
+            <button class="btn btn-outline-light btn-sm" id="togglePdfMobile">
+                <i class="fas fa-file-pdf"></i> Toggle PDF
+            </button>
+        </div>
+    </div>
+      <div class="conversation-container">
+        <div class="row h-100 g-3">
+            <!-- PDF Viewer Column -->
+            <div class="col-lg-6 h-100" id="pdfViewerCol">
+                <div class="pdf-viewer">
+                    <div class="pdf-viewer-header">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-file-pdf text-danger"></i>
+                            <div class="ms-2">
+                                <h6 class="mb-0">{{ document_id }}</h6>
+                                <small class="text-muted">PDF Document</small>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-outline-light" id="prevPage" title="Previous page">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span class="mx-2 page-indicator" id="pageIndicator">Page 1</span>
+                            <button class="btn btn-sm btn-outline-light" id="nextPage" title="Next page">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-light ms-3" id="zoomOut" title="Zoom out">
+                                <i class="fas fa-search-minus"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-light mx-1" id="zoomIn" title="Zoom in">
+                                <i class="fas fa-search-plus"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-light" id="toggleFullscreen" title="Toggle fullscreen">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="pdf-content" id="pdfContent">
+                        <!-- PDF will be loaded here -->
+                        <div class="pdf-loading d-flex flex-column align-items-center justify-content-center w-100 h-100">
+                            <div class="spinner mb-3">
+                                <i class="fas fa-spinner fa-spin fa-2x"></i>
+                            </div>
+                            <p>Loading document...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+              <!-- Chat Column -->
+            <div class="col-lg-6 h-100">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <div class="chat-doc-info">
+                            <div class="chat-doc-icon">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="chat-doc-details">
+                                <h4>Chat Assistant</h4>
+                                <p>Ask me about this document</p>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-outline-light" id="exportChat" title="Export chat">
+                                <i class="fas fa-file-export"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-light ms-2" id="clearChat" title="Clear chat">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-messages" id="chatMessages">
+                        <!-- Bot welcome message -->
+                        <div class="message bot">
+                            <div class="message-content">
+                                Hello! I'm your PDF Assistant. Ask me anything about this document. I'll help you understand the content quickly and efficiently.
+                            </div>
+                            <div class="message-timestamp">Just now</div>
+                            <div class="message-avatar">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Sample user message -->
+                        <div class="message user">
+                            <div class="message-content">
+                                What is this document about?
+                            </div>
+                            <div class="message-timestamp">Just now</div>
+                            <div class="message-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Sample bot response with citations -->
+                        <div class="message bot">
+                            <div class="message-content">
+                                This document appears to be about financial performance for the fiscal year 2025. It includes information about:
+                                <ul>
+                                    <li>Revenue growth <span class="citation" data-page="2">p.2</span></li>
+                                    <li>Major acquisitions <span class="citation" data-page="5">p.5</span></li>
+                                    <li>Future market outlook <span class="citation" data-page="28">p.28</span></li>
+                                </ul>
+                                Would you like me to summarize any specific section in more detail?
+                            </div>
+                            <div class="message-timestamp">Just now</div>
+                            <div class="message-avatar">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Typing indicator -->
+                        <div class="message-typing" id="typingIndicator">
+                            <span class="typing-dot"></span>
+                            <span class="typing-dot"></span>
+                            <span class="typing-dot"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input">
+                        <div class="chat-input-container">
+                            <div class="chat-input-actions">
+                                <button class="chat-input-action" id="attachFile" title="Attach file">
+                                    <i class="fas fa-paperclip"></i>
+                                </button>
+                                <button class="chat-input-action" id="toggleMicrophone" title="Voice input">
+                                    <i class="fas fa-microphone"></i>
+                                </button>
+                            </div>
+                            <input type="text" class="form-control" id="userInput" placeholder="Ask a question about this document...">
+                            <button class="btn" id="sendButton" title="Send message">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>                        <div class="chat-toolbar">
+                            <button type="button" class="chat-tool-btn" id="suggestedQuestions" title="Suggested questions">
+                                <i class="fas fa-lightbulb"></i> Suggestions
+                            </button>
+                            <div class="chat-tools-right">
+                                <button type="button" class="chat-tool-btn" id="fontSizeToggle" title="Font size">
+                                    <i class="fas fa-text-height"></i>
+                                </button>
+                                <button type="button" class="chat-tool-btn" id="toggleHighlighting" title="Toggle citation highlighting">
+                                    <i class="fas fa-highlighter"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- PDF.js for PDF rendering -->
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/build/pdf.min.js"></script>
+<script>
+    // Set the worker source for PDF.js
+    if (typeof pdfjsLib !== 'undefined') {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/build/pdf.worker.min.js';
+    }
+    
+    // Set document ID for the conversation
+    document.body.setAttribute('data-document-id', '{{ document_id }}');
+</script>
+<!-- Custom conversation JS -->
+<script src="{{ url_for('static', filename='js/conversation.js') }}"></script>
+{% endblock %}

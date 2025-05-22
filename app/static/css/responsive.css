@@ -1,0 +1,108 @@
+/* Responsive Styles */
+
+/* Mobile devices */
+@media (max-width: 575.98px) {
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    
+    h1 {
+        font-size: 1.75rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    .btn-lg {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+    }
+    
+    .navbar {
+        padding: 0.5rem;
+    }
+    
+    .navbar-brand {
+        font-size: 1rem;
+    }
+    
+    .features-section,
+    .how-it-works-section,
+    .cta-section {
+        padding: 40px 0;
+    }
+    
+    .feature-card,
+    .step-card {
+        margin-bottom: 15px;
+    }
+}
+
+/* Small devices (landscape phones) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+    h1 {
+        font-size: 2rem;
+    }
+    
+    h2 {
+        font-size: 1.75rem;
+    }
+    
+    .features-section,
+    .how-it-works-section,
+    .cta-section {
+        padding: 50px 0;
+    }
+    
+    .feature-card,
+    .step-card {
+        margin-bottom: 20px;
+    }
+}
+
+/* Medium devices (tablets) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .navbar-nav {
+        justify-content: center;
+    }
+    
+    .card {
+        margin-bottom: 20px;
+    }
+    
+    .features-section,
+    .how-it-works-section,
+    .cta-section {
+        padding: 60px 0;
+    }
+}
+
+/* Large devices (desktops) */
+@media (min-width: 992px) {
+    .navbar-nav.position-absolute {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+/* Dark mode preference media query */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --dark-bg: #121118;
+        --dark-bg-lighter: #1E1A2B;
+        --card-bg: #1D1925;
+        --border-color: #2B2442;
+    }
+}
+
+/* Light mode preference media query */
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+        --dark-bg: #FFFFFF;
+        --dark-bg-lighter: #F8F5FE;
+        --card-bg: #FFFFFF;
+        --border-color: #E2D8F3;
+    }
+}

@@ -1,0 +1,101 @@
+<footer class="footer mt-5" role="contentinfo">
+    <div class="container">
+        <div class="row g-4">            
+            <div class="col-lg-4 col-md-6">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="fas fa-book-open me-2" aria-hidden="true"></i>
+                    <span class="fw-bold">PDF Chat Assistant</span>
+                </div>
+                <p class="footer-text">
+                    An intelligent AI assistant that helps you extract insights from your PDF documents through natural conversation.
+                </p>
+                <div class="social-icons mt-3">
+                    <a href="#" class="footer-link me-3" aria-label="Twitter"><i class="fab fa-twitter" aria-hidden="true"></i></a>
+                    <a href="#" class="footer-link me-3" aria-label="LinkedIn"><i class="fab fa-linkedin" aria-hidden="true"></i></a>
+                    <a href="#" class="footer-link" aria-label="GitHub"><i class="fab fa-github" aria-hidden="true"></i></a>
+                </div>
+            </div>
+            
+            <div class="col-lg-2 col-md-6">
+                <h6 class="mb-3">Quick Links</h6>
+                <nav aria-label="Quick links navigation">
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <a href="{{ url_for('main.index') }}" class="footer-link">
+                                <i class="fas fa-chevron-right fa-xs me-1" aria-hidden="true"></i> Home
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{{ url_for('main.documents') }}" class="footer-link">
+                                <i class="fas fa-chevron-right fa-xs me-1" aria-hidden="true"></i> Documents
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{{ url_for('main.about') }}" class="footer-link">
+                                <i class="fas fa-chevron-right fa-xs me-1" aria-hidden="true"></i> About
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <h6 class="mb-3">Resources</h6>
+                <nav aria-label="Resources navigation">
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <a href="#" class="footer-link">
+                                <i class="fas fa-chevron-right fa-xs me-1" aria-hidden="true"></i> Help Center
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#" class="footer-link">
+                                <i class="fas fa-chevron-right fa-xs me-1" aria-hidden="true"></i> Blog
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#" class="footer-link">
+                                <i class="fas fa-chevron-right fa-xs me-1" aria-hidden="true"></i> Documentation
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <h6 class="mb-3">Subscribe to Updates</h6>
+                <form aria-label="Newsletter subscription form">
+                    <div class="input-group mb-3">
+                        <input type="email" class="form-control" placeholder="Your email" aria-label="Email address" required>
+                        <button class="btn btn-gradient" type="submit" aria-label="Subscribe">
+                            <i class="fas fa-paper-plane me-1" aria-hidden="true"></i> Join
+                        </button>
+                    </div>
+                </form>
+                <p class="footer-text">Get the latest updates about new features.</p>
+            </div>
+        </div>
+        
+        <hr class="my-4">
+        <div class="row align-items-center">
+            <div class="col-md-6 text-center text-md-start">
+                <p class="mb-md-0 footer-text">© 2025 PDF Chat Assistant. All rights reserved.</p>
+            </div>
+            <div class="col-md-6 text-center text-md-end">
+                <nav aria-label="Legal navigation">
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item">
+                            <a href="#" class="footer-link">Privacy Policy</a>
+                        </li>
+                        <li class="list-inline-item"><span class="footer-text mx-2" aria-hidden="true">•</span></li>
+                        <li class="list-inline-item">
+                            <a href="#" class="footer-link">Terms of Use</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>        </div>
+    </div>
+</footer>
+
+<!-- Include footer.js for animations and interactions -->
+<script src="{{ url_for('static', filename='js/footer.js') }}"></script>

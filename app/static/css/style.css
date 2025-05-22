@@ -1,33 +1,101 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 :root {
-    /* Dark theme colors (default) - Purple Gradation */
+    /* Dark theme colors (default) - Darker Purple Gradation */
     --primary-color: #7E57C2; /* Main purple */
     --primary-light: #9575CD; /* Lighter purple */
     --primary-dark: #5E35B1; /* Darker purple */
     --secondary-color: #B39DDB; /* Accent purple */
     --text-light: #F3E5F5; /* Light text for dark background */
-    --dark-bg: #1A1A2E; /* Dark blue-purple background */
-    --dark-bg-lighter: #2D2D42; /* Slightly lighter dark background */
+    --text-muted: rgba(243, 229, 245, 0.7); /* Muted text for dark background */
+    --text-info: #A8DAFF; /* Info text color */
+    
+    /* Core background colors */
+    --dark-bg: #121118; /* Very dark background with slight purple tint */
+    --dark-bg-lighter: #1E1A2B; /* Slightly lighter dark background */
+    --dark-bg-lightest: #2D2640; /* Even lighter background for hover effects */
+    
+    /* UI Element colors */
+    --card-bg: #1D1925; /* Card background color */
+    --input-bg: #1D1925; /* Input background color */
+    --border-color: #2B2442; /* Border color for cards and elements */
+    --shadow-color: rgba(0, 0, 0, 0.3); /* Shadow color for dark theme */
+    --highlight-bg: rgba(126, 87, 194, 0.15); /* Subtle highlight background */
+    
+    /* Status colors */
     --success-color: #4CAF50;
+    --warning-color: #FFC107;
     --danger-color: #FF5252;
+    --info-color: #2196F3;
+    
+    /* Gradients */
     --gradient-bg: linear-gradient(135deg, var(--dark-bg-lighter) 0%, var(--dark-bg) 100%);
     --gradient-primary: linear-gradient(135deg, #7E57C2 0%, #5E35B1 100%);
-    --pdf-bg: #232336; /* Darker purple-blue for PDF viewer */
+    --gradient-text: linear-gradient(135deg, #EC73FF 0%, #A409FE 100%);
+    
+    /* PDF and Chat specific colors */
+    --pdf-bg: #171620; /* Darker background for PDF viewer */
+    --pdf-controls-bg: rgba(0, 0, 0, 0.2); /* Background for PDF controls */
+    --chat-bot-bubble: #1E1A2B; /* Bot message bubble */
+    --chat-user-bubble: #372E54; /* User message bubble */
+    --chat-input-bg: rgba(43, 36, 66, 0.6); /* Chat input background */
+    
+    /* Gradient colors for buttons and accents - Pink to Purple */
+    --gradient-start: #EC73FF;
+    --gradient-middle: #FF91A9;
+    --gradient-end: #A409FE;
+    
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
 }
 
 /* Light theme colors - Purple Gradation */
 :root[data-theme="light"] {
-    --primary-color: #9575CD; /* Main purple (lighter) */
-    --primary-light: #B39DDB; /* Even lighter purple */
-    --primary-dark: #7E57C2; /* Darker purple */
-    --secondary-color: #5E35B1; /* Accent color */
+    /* Main colors */
+    --primary-color: #7E57C2; /* Same main purple to keep brand consistency */
+    --primary-light: #9575CD; /* Lighter purple */
+    --primary-dark: #5E35B1; /* Darker purple */
+    --secondary-color: #B39DDB; /* Accent purple */
     --text-light: #311B92; /* Dark purple text for light background */
-    --dark-bg: #F5F5FC; /* Very light purple background */
-    --dark-bg-lighter: #E8E4F3; /* Light purple background */
-    --gradient-bg: linear-gradient(135deg, #F5F5FC 0%, #E8E4F3 100%);
-    --gradient-primary: linear-gradient(135deg, #9575CD 0%, #B39DDB 100%);
-    --pdf-bg: #EEEEF7; /* Light purple-white for PDF viewer */
+    --text-muted: rgba(49, 27, 146, 0.6); /* Muted text for light background */
+    --text-info: #0070BB; /* Info text color for light theme */
+    
+    /* Core background colors */
+    --dark-bg: #FFFFFF; /* Pure white background */
+    --dark-bg-lighter: #F8F5FE; /* Very light purple tint */
+    --dark-bg-lightest: #F0E8FF; /* Even lighter background for hover effects */
+    
+    /* UI Element colors */
+    --card-bg: #FFFFFF; /* Card background color */
+    --input-bg: #F8F5FE; /* Input background color */
+    --border-color: #E2D8F3; /* Lighter border color with purple tint */
+    --shadow-color: rgba(126, 87, 194, 0.15); /* Shadow color for light theme */
+    --highlight-bg: rgba(126, 87, 194, 0.08); /* Subtle highlight background */
+    
+    /* Status colors - slightly adjusted for light theme */
+    --success-color: #2E7D32;
+    --warning-color: #FF8F00;
+    --danger-color: #D32F2F;
+    --info-color: #0288D1;
+    
+    /* Gradients */
+    --gradient-bg: linear-gradient(135deg, #FFFFFF 0%, #F5F0FF 100%);
+    --gradient-primary: linear-gradient(135deg, #7E57C2 0%, #9575CD 100%);
+    --gradient-text: linear-gradient(135deg, #7E57C2 0%, #5E35B1 100%);
+    
+    /* PDF and Chat specific colors */
+    --pdf-bg: #FCFCFF; /* Almost white with slight blue tint for PDF viewer */
+    --pdf-controls-bg: rgba(0, 0, 0, 0.05); /* Background for PDF controls */
+    --chat-bot-bubble: #F0E8FF; /* Bot message bubble */
+    --chat-user-bubble: #E1D5F5; /* User message bubble */
+    --chat-input-bg: rgba(248, 245, 254, 0.8); /* Chat input background */
+    
+    /* We keep the same gradient colors in light mode for consistency */
+    --gradient-start: #EC73FF;
+    --gradient-middle: #FF91A9;
+    --gradient-end: #A409FE;
 }
 
 body, html {
@@ -35,7 +103,471 @@ body, html {
     font-family: 'Poppins', sans-serif;
     background-color: var(--dark-bg);
     color: var(--text-light);
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+/* Custom CSS Classes to replace Bootstrap */
+/* --- Layout --- */
+.container {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+@media (min-width: 576px) {
+    .container {
+        max-width: 540px;
+    }
+}
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 720px;
+    }
+}
+
+@media (min-width: 992px) {
+    .container {
+        max-width: 960px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1140px;
+    }
+}
+
+/* --- Cards --- */
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: var(--card-bg);
+    background-clip: border-box;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.card-body {
+    flex: 1 1 auto;
+    padding: 1.25rem;
+}
+
+.card-title {
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+}
+
+.card-text {
+    margin-bottom: 1rem;
+}
+
+.card-footer {
+    padding: 0.75rem 1.25rem;
+    border-top: 1px solid var(--border-color);
+}
+
+/* --- Buttons --- */
+.btn {
+    display: inline-block;
+    font-weight: 500;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    border-radius: 0.2rem;
+}
+
+.btn-lg {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.125rem;
+    line-height: 1.5;
+    border-radius: 0.3rem;
+}
+
+/* --- Text Utilities --- */
+.text-center {
+    text-align: center;
+}
+
+.text-light {
+    color: var(--text-light);
+}
+
+.text-muted {
+    color: rgba(var(--text-light), 0.7);
+}
+
+/* Global responsive adjustments */
+.theme-transition {
+    transition: all 0.3s ease;
+}
+
+/* Page transition animations */
+.page-transition {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.page-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Responsive typography */
+@media (max-width: 767.98px) {
+    h1 {
+        font-size: 2rem; /* Smaller headings on mobile */
+    }
+    h2 {
+        font-size: 1.75rem;
+    }
+    h3 {
+        font-size: 1.5rem;
+    }
+    
+    /* Add more breathing space on mobile */
+    .section {
+        padding: 2.5rem 0;
+    }
+    
+    /* Reduce padding in custom container for mobile */
+    .custom-container {
+        padding-right: 4%;
+        padding-left: 4%;
+    }
+
+    /* Enhance mobile navbar */
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+    
+    /* Make buttons slightly bigger for better touch targets */
+    .btn {
+        padding: 0.5rem 1rem;
+    }
+    
+    /* Footer adjustments */
+    .footer h6 {
+        margin-top: 0.5rem;
+    }
+}
+
+/* Tablet specific adjustments */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .custom-container {
+        padding-right: 3.5%;
+        padding-left: 3.5%;
+    }
+}
+
+/* Mobile-specific transition animations */
+@media (max-width: 767.98px) {
+    .message {
+        animation: message-appear 0.3s ease-in-out;
+    }
+    
+    @keyframes message-appear {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}
+
+/* Custom Container - Less padding than Bootstrap default */
+.custom-container {
+    width: 100%;
+    padding-right: 3%;
+    padding-left: 3%;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+/* Footer positioning */
+.footer {
+    width: 100%;
+    position: relative;
+    margin-top: 2rem;
+}
+
+/* Ensure content pushes footer down */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.min-vh-100 {
+    min-height: 70vh;
+}
+
+/* Navbar styling */
+.navbar {
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Light Theme Adjustments */
+:root[data-theme="light"] {
+    /* Override Bootstrap's dark classes in light mode */
+    --bs-dark-rgb: 245, 245, 252; /* Light background for dark elements */
+}
+
+:root[data-theme="light"] .navbar {
+    background-color: var(--dark-bg) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+:root[data-theme="light"] .bg-dark {
+    background-color: var(--dark-bg) !important;
+}
+
+:root[data-theme="light"] .text-light {
+    color: var(--text-light) !important;
+}
+
+:root[data-theme="light"] .navbar-dark .navbar-nav .nav-link {
+    color: var(--text-light);
+}
+
+:root[data-theme="light"] .navbar-dark .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Additional light theme fixes */
+:root[data-theme="light"] .card.bg-dark {
+    background-color: #EFEEF8 !important;
+    border: 1px solid rgba(126, 87, 194, 0.2);
+}
+
+:root[data-theme="light"] .card .text-muted {
+    color: #6c5d89 !important;
+}
+
+:root[data-theme="light"] .footer.bg-dark {
+    background-color: #E8E4F3 !important;
+}
+
+:root[data-theme="light"] .form-control {
+    background-color: #FFFFFF;
+    color: #333333;
+    border-color: #9575CD;
+}
+
+:root[data-theme="light"] .btn-outline-light {
+    color: #5E35B1;
+    border-color: #5E35B1;
+}
+
+:root[data-theme="light"] .btn-outline-light:hover {
+    background-color: #5E35B1;
+    color: white;
+}
+
+/* Navbar hover effect with gradient underline and text */
+.nav-hover {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.nav-hover:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.nav-hover:hover:after {
+    width: 100%;
+}
+
+.nav-hover:hover {
+    background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: var(--gradient-end);
+}
+
+.navbar .navbar-nav .nav-link.active {
+    background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: var(--gradient-end);
+    position: relative;
+}
+
+.navbar .navbar-nav .nav-link.active:after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+    transform: translateX(-50%);
+}
+
+/* Ensure light theme has consistent navbar hover states */
+:root[data-theme="light"] .navbar-nav .nav-link {
+    color: var(--text-light);
+}
+
+:root[data-theme="light"] .navbar-nav .nav-link:hover,
+:root[data-theme="light"] .navbar-nav .nav-link.active {
+    background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+:root[data-theme="light"] .navbar-nav .nav-link:hover:after,
+:root[data-theme="light"] .navbar-nav .nav-link.active:after {
+    background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+}
+
+/* Gradient Button */
+.btn-gradient {
+    background: linear-gradient(90deg, var(--gradient-start) 0%, var(--gradient-middle) 50%, var(--gradient-end) 100%);
+    border: none;
+    color: white;
+    position: relative;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.btn-gradient:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
+    transition: all 0.6s ease;
+}
+
+.btn-gradient:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    color: white;
+}
+
+.btn-gradient:hover:before {
+    left: 100%;
+}
+
+/* Apply gradient to primary buttons for consistency */
+.btn-primary {
+    background: linear-gradient(90deg, var(--gradient-start) 0%, var(--gradient-middle) 50%, var(--gradient-end) 100%);
+    border: none;
+    position: relative;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.btn-primary:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
+    transition: all 0.6s ease;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(90deg, var(--gradient-end) 0%, var(--gradient-middle) 50%, var(--gradient-start) 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover:before {
+    left: 100%;
+}
+
+/* Outline button with gradient hover */
+.btn-outline-custom {
+    border: 1px solid var(--primary-color);
+    color: var(--text-light);
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-custom:hover {
+    background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+    border-color: transparent;
+    color: white;
+}
+
+:root[data-theme="light"] .btn-outline-custom {
+    border: 1px solid var(--primary-dark);
+    color: var(--primary-dark);
+}
+
+/* Login button (outline button) with gradient hover */
+.btn-outline-light {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-light:hover {
+    color: white;
+    border-color: transparent;
+    background: linear-gradient(90deg, var(--gradient-start), var(--gradient-middle), var(--gradient-end));
+}
+
+:root[data-theme="light"] .btn-outline-light:hover {
+    color: white;
+}
+
+/* Theme transition improvements */
+html.theme-transition,
+html.theme-transition *,
+html.theme-transition *:before,
+html.theme-transition *:after {
+    transition: all 0s !important;
+    -webkit-transition: all 0s !important;
+    -moz-transition: all 0s !important;
+    -ms-transition: all 0s !important;
+    -o-transition: all 0s !important;
 }
 
 /* ===== Upload Section ===== */
@@ -434,6 +966,45 @@ body, html {
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--primary-light);
+}
+
+/* Footer and Contact Styling */
+.footer-text {
+    color: rgba(243, 229, 245, 0.7);
+}
+
+.footer-link, .contact-link {
+    color: rgba(243, 229, 245, 0.7);
+    transition: all 0.3s ease;
+}
+
+.footer-link:hover, .contact-link:hover {
+    color: var(--primary-light);
+    text-decoration: none;
+}
+
+.contact-link {
+    background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 500;
+}
+
+:root[data-theme="light"] .contact-link {
+    background: linear-gradient(90deg, var(--primary-dark), var(--gradient-end));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+:root[data-theme="light"] .footer-text,
+:root[data-theme="light"] .footer-link {
+    color: #6c5d89;
+}
+
+:root[data-theme="light"] .footer-link:hover {
+    color: var(--primary-color);
 }
 
 /* Responsive Adjustments */

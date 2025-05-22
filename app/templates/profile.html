@@ -1,0 +1,397 @@
+{% extends "base.html" %}
+
+{% block title %}User Profile - PDF Chat Assistant{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+<style>
+    .page-header {
+        margin-bottom: 30px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .page-title {
+        margin: 0;
+        font-weight: 600;
+    }
+    
+    .breadcrumb {
+        margin-bottom: 10px;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+    
+    .breadcrumb-item {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+    }
+    
+    .breadcrumb-item a {
+        color: var(--text-muted);
+        text-decoration: none;
+        transition: color var(--transition-fast);
+    }
+    
+    .breadcrumb-item a:hover {
+        color: var(--primary-color);
+    }
+    
+    .breadcrumb-separator {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="breadcrumb">
+        <span class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></span>
+        <span class="breadcrumb-separator"><i class="fas fa-chevron-right"></i></span>
+        <span class="breadcrumb-item">Profile</span>
+    </div>
+    <h1 class="page-title">User Profile</h1>
+</div>
+
+<!-- Include the user profile component -->
+{% include 'components/user_profile.html' %}
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h3>Usage Analytics</h3>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Document Usage</h4>
+                <div class="chart-container">
+                    <canvas id="documentChart" width="300" height="200"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h4>Conversation Activity</h4>
+                <div class="chart-container">
+                    <canvas id="activityChart" width="300" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3>Recent Activity</h3>
+            </div>
+            <div class="card-body p-0">
+                <ul class="activity-list">
+                    {% for i in range(5) %}
+                    <li class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-comment-alt"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Conversation with Document {{ i+1 }}</div>
+                            <div class="activity-time">{{ i+1 }} hour{% if i != 0 %}s{% endif %} ago</div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3>Storage Usage</h3>
+            </div>
+            <div class="card-body">
+                <div class="storage-info">
+                    <div class="storage-progress">
+                        <div class="progress">
+                            <div class="progress-bar" style="width: 65%;"></div>
+                        </div>
+                        <div class="storage-text">
+                            <span class="storage-used">65 MB</span> / 
+                            <span class="storage-total">100 MB</span>
+                        </div>
+                    </div>
+                    <div class="storage-breakdown mt-4">
+                        <h5>Storage Breakdown</h5>
+                        <div class="storage-item">
+                            <div class="storage-item-label">Documents</div>
+                            <div class="storage-item-bar">
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 75%;"></div>
+                                </div>
+                            </div>
+                            <div class="storage-item-value">48.75 MB</div>
+                        </div>
+                        <div class="storage-item">
+                            <div class="storage-item-label">Conversation History</div>
+                            <div class="storage-item-bar">
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 25%;"></div>
+                                </div>
+                            </div>
+                            <div class="storage-item-value">16.25 MB</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get theme for chart colors
+        const isLightTheme = document.documentElement.getAttribute('data-theme') === 'light';
+        const gridColor = isLightTheme ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)';
+        const textColor = isLightTheme ? '#311B92' : '#F3E5F5';
+        
+        // Document usage chart
+        const documentCtx = document.getElementById('documentChart').getContext('2d');
+        new Chart(documentCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['PDF Files', 'Word Documents', 'Text Files', 'Other'],
+                datasets: [{
+                    data: [65, 20, 10, 5],
+                    backgroundColor: [
+                        '#7E57C2', // Main purple
+                        '#9575CD', // Light purple
+                        '#B39DDB', // Lighter purple
+                        '#D1C4E9'  // Lightest purple
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: textColor,
+                            font: {
+                                family: 'Poppins'
+                            }
+                        }
+                    }
+                },
+                cutout: '60%',
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+        
+        // Activity chart
+        const activityCtx = document.getElementById('activityChart').getContext('2d');
+        new Chart(activityCtx, {
+            type: 'line',
+            data: {
+                labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+                datasets: [{
+                    label: 'Conversations',
+                    data: [5, 8, 12, 7, 10, 4, 6],
+                    borderColor: '#7E57C2',
+                    backgroundColor: 'rgba(126, 87, 194, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#7E57C2',
+                    pointBorderColor: '#7E57C2',
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: gridColor
+                        },
+                        ticks: {
+                            color: textColor,
+                            font: {
+                                family: 'Poppins'
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: gridColor
+                        },
+                        ticks: {
+                            color: textColor,
+                            font: {
+                                family: 'Poppins'
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            color: textColor,
+                            font: {
+                                family: 'Poppins'
+                            }
+                        }
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+        
+        // Update chart colors when theme changes
+        document.getElementById('toggleDarkMode')?.addEventListener('click', function() {
+            setTimeout(() => {
+                window.location.reload();
+            }, 200);
+        });
+    });
+</script>
+
+<style>
+    /* Additional styling for analytics section */
+    .chart-container {
+        position: relative;
+        height: 250px;
+        margin-top: 15px;
+    }
+    
+    .activity-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .activity-item {
+        display: flex;
+        align-items: center;
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+    
+    .activity-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: var(--highlight-bg);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 15px;
+        color: var(--primary-color);
+    }
+    
+    .activity-content {
+        flex: 1;
+    }
+    
+    .activity-title {
+        font-weight: 500;
+        margin-bottom: 3px;
+    }
+    
+    .activity-time {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+    }
+    
+    .storage-info {
+        padding: 10px;
+    }
+    
+    .storage-text {
+        display: flex;
+        justify-content: flex-end;
+        font-size: 0.9rem;
+        margin-top: 5px;
+        color: var(--text-muted);
+    }
+    
+    .storage-breakdown {
+        margin-top: 20px;
+    }
+    
+    .storage-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+    
+    .storage-item-label {
+        width: 30%;
+        font-size: 0.9rem;
+    }
+    
+    .storage-item-bar {
+        width: 50%;
+        padding: 0 15px;
+    }
+    
+    .storage-item-value {
+        width: 20%;
+        text-align: right;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+    }
+    
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin-right: -15px;
+        margin-left: -15px;
+    }
+    
+    .col-md-6 {
+        padding: 0 15px;
+        width: 100%;
+    }
+    
+    @media (min-width: 768px) {
+        .col-md-6 {
+            width: 50%;
+        }
+    }
+    
+    .mt-4 {
+        margin-top: 30px;
+    }
+    
+    .card-header {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .card-header h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+    }
+    
+    .card-body {
+        padding: 20px;
+    }
+    
+    .card-body.p-0 {
+        padding: 0;
+    }
+</style>
+{% endblock %}

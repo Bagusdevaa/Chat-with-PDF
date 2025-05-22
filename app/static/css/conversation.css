@@ -1,0 +1,287 @@
+/* Conversation Page Specific Styles */
+
+/* Export Modal Styles */
+.export-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.export-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--dark-bg-lighter);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.export-option:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px var(--shadow-color);
+    border-color: var(--primary-color);
+}
+
+.export-option.selected {
+    border-color: var(--primary-color);
+    background-color: var(--highlight-bg);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px var(--shadow-color);
+}
+
+.export-option i {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+}
+
+.export-option span {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.export-options-detail {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: var(--dark-bg-lighter);
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.form-check-input {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.form-check-label {
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* System Message */
+.system-message {
+    text-align: center;
+    padding: 8px 16px;
+    background-color: var(--highlight-bg);
+    color: var(--text-muted);
+    border-radius: 20px;
+    margin: 15px auto;
+    font-size: 0.85rem;
+    width: fit-content;
+    animation: fadeIn 0.3s ease;
+    transition: opacity 0.5s ease;
+}
+
+.system-message.fade-out {
+    opacity: 0;
+}
+
+/* Speech recognition feedback */
+.speech-feedback {
+    position: absolute;
+    bottom: -30px;
+    left: 60px;
+    font-size: 14px;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.speech-feedback::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    margin-right: 8px;
+    animation: pulse 1.5s infinite;
+}
+
+/* Code blocks in messages */
+.message-content pre {
+    background-color: var(--dark-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 12px;
+    margin: 10px 0;
+    overflow-x: auto;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 0.9em;
+}
+
+.message-content pre code {
+    color: var(--primary-light);
+}
+
+/* Message with code highlight */
+.message-content .code-block {
+    position: relative;
+    margin: 15px 0;
+}
+
+.message-content .code-block .code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    font-size: 0.85rem;
+}
+
+.message-content .code-block .code-lang {
+    font-weight: 500;
+    color: var(--primary-light);
+}
+
+.message-content .code-block .code-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.message-content .code-block .code-action {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.message-content .code-block .code-action:hover {
+    color: var(--text-light);
+}
+
+.message-content .code-block pre {
+    margin: 0;
+    border-radius: 0 0 6px 6px;
+}
+
+/* Enhanced Tables */
+.message-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+    font-size: 0.9em;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px var(--shadow-color);
+}
+
+.message-content table thead tr {
+    background-color: var(--primary-dark);
+    color: white;
+    text-align: left;
+}
+
+.message-content table th,
+.message-content table td {
+    padding: 12px 15px;
+}
+
+.message-content table tbody tr {
+    border-bottom: thin solid var(--border-color);
+}
+
+.message-content table tbody tr:nth-of-type(even) {
+    background-color: var(--highlight-bg);
+}
+
+.message-content table tbody tr:last-of-type {
+    border-bottom: 2px solid var(--primary-dark);
+}
+
+/* Input focused state */
+.chat-input-container.input-focused {
+    transform: translateY(-2px);
+}
+
+.chat-input-container.input-focused .form-control {
+    border-color: var(--gradient-start);
+    box-shadow: 0 0 0 0.25rem rgba(164, 9, 254, 0.2);
+}
+
+/* Citation hover */
+.citation {
+    position: relative;
+}
+
+.citation .citation-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--dark-bg-lighter);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 12px;
+    width: max-content;
+    max-width: 200px;
+    box-shadow: 0 3px 10px var(--shadow-color);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 10;
+}
+
+.citation:hover .citation-tooltip {
+    opacity: 1;
+}
+
+/* Response time indicator */
+.response-time {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: -15px;
+    margin-bottom: 15px;
+}
+
+/* Mobile optimizations */
+@media (max-width: 767px) {
+    .message {
+        max-width: 90%;
+    }
+    
+    .message.user .message-avatar, 
+    .message.bot .message-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+    
+    .message.user {
+        margin-right: 36px;
+    }
+    
+    .message.bot {
+        margin-left: 36px;
+    }
+    
+    .message.user .message-avatar {
+        right: -36px;
+    }
+    
+    .message.bot .message-avatar {
+        left: -36px;
+    }
+    
+    .export-options {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
