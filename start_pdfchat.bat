@@ -52,6 +52,6 @@ echo [INFO] Press CTRL+C to stop the server
 echo.
 
 REM Run the application with the reloader disabled to avoid Windows socket issues
-python run.py
+python server.py
 
 pause
