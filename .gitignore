@@ -70,3 +70,22 @@ htmlcov/
 node_modules/
 app.py
 htmlTemplates.py
+
+# Tailwind CSS specific
+.cache/
+**/dist/
+**/.cache/
+.parcel-cache/
+
+# Frontend build artifacts
+public/build/
+public/dist/
+public/static/build/
+app/static/build/
+*.min.css
+*.min.js
+
+# NPM/Yarn
+yarn-error.log
+yarn.lock
+package-lock.json
