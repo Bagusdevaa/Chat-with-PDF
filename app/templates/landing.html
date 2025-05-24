@@ -10,13 +10,14 @@
         content="Upload your PDF documents and chat with them. Get instant answers from your PDFs with our AI-powered chatbot.">
     <link rel="icon" type="image/png"
         href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/svgs/solid/file-pdf.svg">
-    <link href="../static/css/style.css" rel="stylesheet">
-    <link href="../static/css/input.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/input.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
+    <!-- <link href="../static/css/input.css" rel="stylesheet">
     <link href="../static/css/output.css" rel="stylesheet">
-    <link href="../static/css/gradients.css" rel="stylesheet">
+    <link href="../static/css/gradients.css" rel="stylesheet"> -->
 </head>
 
-<body class="font-poppins">
+<body class="font-poppins bg-gray-50">
     <!-- Define SVG Gradients -->
     <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
         <linearGradient id="myGradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -28,7 +29,7 @@
     <header class="text-gray-600 body-font fixed top-0 left-0 w-full z-50 bg-white shadow">
         <div class="container mx-auto flex p-5 items-center justify-between">
             <!-- Logo on the left -->
-            <a class="flex title-font font-poppins-medium items-center text-gray-900">
+            <a class="flex title-font font-poppins items-center text-gray-900">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="url(#myGradient)" stroke-linecap="round"
                     stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2 rounded-full"
                     viewBox="0 0 24 24">
@@ -148,8 +149,7 @@
     <!-- NAVBAR END -->
 
     <!-- HERO  -->
-    <section id="hero"
-        class="relative min-h-screen w-full flex items-center justify-center  pt-16 md:pt-16 pt-32">
+    <section id="hero" class="relative min-h-screen w-full flex items-center justify-center  pt-16 md:pt-16 pt-32">
         <!-- Background elements (decorative) -->
         <div
             class="absolute top-20 right-0 w-72 h-72 bg-purple-100 rounded-full mix-blend-multiply filter blur-xl opacity-30">
@@ -170,7 +170,8 @@
                     documents
                     instantly
                 </h1>
-                <p class="mb-8 leading-relaxed text-lg font-poppins font-normal animate-fade-in delay-300">Upload your PDFs
+                <p class="mb-8 leading-relaxed text-lg font-poppins font-normal animate-fade-in delay-300">Upload your
+                    PDFs
                     and start asking
                     questions. Our AI-powered tool
                     extracts key information and answers your queries with accurate, contextual responses - making
@@ -194,7 +195,8 @@
     <section id="features" class="text-gray-600 body-font">
         <div class="container px-5 py-24 mx-auto">
             <div class="text-center mb-20">
-                <h1 class="sm:text-3xl text-2xl font-poppins font-semibold title-font text-gray-900 mb-4 text-gradient">Key Features </h1>
+                <h1 class="sm:text-3xl text-2xl font-poppins font-semibold title-font text-gray-900 mb-4 text-gradient">
+                    Key Features </h1>
                 <p class="text-base leading-relaxed xl:w-2/4 lg:w-3/4 mx-auto text-gray-500 font-poppins">
                     ChatPDF leverages advanced
                     AI to transform how you interact with PDF documents. Upload, ask questions, and get instant,
@@ -205,14 +207,16 @@
             </div>
             <div class="flex flex-wrap sm:-m-4 -mx-4 -mb-10 -mt-4 md:space-y-0 space-y-6">
                 <div class="p-4 md:w-1/3 flex flex-col text-center items-center">
-                    <div class="flex-grow h-full bg-gray-50 bg-opacity-75 px-8 pb-16 rounded-lg overflow-hidden">
+                    <div
+                        class="flex-grow h-full bg-white bg-opacity-75 px-8 pb-16 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100">
                         <div class="w-20 h-20 inline-flex items-center justify-center rounded-full flex-shrink-0">
                             <svg fill="none" stroke="url(#myGradient)" stroke-linecap="round" stroke-linejoin="round"
                                 stroke-width="2" class="w-10 h-10" viewBox="0 0 24 24">
                                 <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
                             </svg>
                         </div>
-                        <h2 class="text-gray-900 text-lg title-font font-poppins font-semibold text-gradient mb-3">Instant Answers</h2>
+                        <h2 class="text-gray-900 text-lg title-font font-poppins font-semibold text-gradient mb-3">
+                            Instant Answers</h2>
                         <p class="leading-relaxed text-base font-poppins">Get immediate answers to your
                             questions about any PDF
                             document. Our AI understands context and provides accurate, relevant responses without
@@ -221,7 +225,8 @@
                     </div>
                 </div>
                 <div class="p-4 md:w-1/3 flex flex-col text-center items-center">
-                    <div class="flex-grow h-full bg-gray-50 bg-opacity-75 px-8 pb-16 rounded-lg overflow-hidden">
+                    <div
+                        class="flex-grow h-full bg-white bg-opacity-75 px-8 pb-16 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100">
                         <div class="w-20 h-20 inline-flex items-center justify-center rounded-full flex-shrink-0">
                             <svg fill="none" stroke="url(#myGradient)" stroke-linecap="round" stroke-linejoin="round"
                                 stroke-width="2" class="w-10 h-10" viewBox="0 0 24 24">
@@ -230,7 +235,8 @@
                                 <path d="M20 4L8.12 15.88M14.47 14.48L20 20M8.12 8.12L12 12"></path>
                             </svg>
                         </div>
-                        <h2 class="text-gray-900 text-lg title-font font-poppins font-semibold text-gradient mb-3">Multi-Document Analysis
+                        <h2 class="text-gray-900 text-lg title-font font-poppins font-semibold text-gradient mb-3">
+                            Multi-Document Analysis
                         </h2>
                         <p class="leading-relaxed text-base font-poppins">Upload multiple PDFs and chat across
                             all of them
@@ -240,7 +246,8 @@
                     </div>
                 </div>
                 <div class="p-4 md:w-1/3 flex flex-col text-center items-center">
-                    <div class="flex-grow h-full bg-gray-50 bg-opacity-75 px-8 pb-16 rounded-lg overflow-hidden">
+                    <div
+                        class="flex-grow h-full bg-white bg-opacity-75 px-8 pb-16 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100">
                         <div class="w-20 h-20 inline-flex items-center justify-center rounded-full flex-shrink-0">
                             <svg fill="none" stroke="url(#myGradient)" stroke-linecap="round" stroke-linejoin="round"
                                 stroke-width="2" class="w-10 h-10" viewBox="0 0 24 24">
@@ -248,7 +255,8 @@
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
                         </div>
-                        <h2 class="text-gray-900 text-lg title-font font-poppins font-semibold text-gradient mb-3">Secure & Private</h2>
+                        <h2 class="text-gray-900 text-lg title-font font-poppins font-semibold text-gradient mb-3">
+                            Secure & Private</h2>
                         <p class="leading-relaxed text-base font-poppins">Your documents remain private and
                             secure. We use advanced
                             encryption and never store the content of your PDFs. Upload confidential reports, legal
@@ -265,7 +273,8 @@
     <section id="how-it-works" class="text-gray-600 body-font">
         <div class="container px-5 py-24 mx-auto">
             <div class="text-center mb-20">
-                <h1 class="sm:text-3xl text-2xl font-poppins font-semibold title-font text-gray-900 mb-4 text-gradient">How It Works</h1>
+                <h1 class="sm:text-3xl text-2xl font-poppins font-semibold title-font text-gray-900 mb-4 text-gradient">
+                    How It Works</h1>
                 <p class="text-base leading-relaxed xl:w-2/4 lg:w-3/4 mx-auto text-gray-500 font-poppins">
                     ChatPDF makes interacting
                     with your PDF documents as easy as chatting with a knowledgeable assistant. Just follow these simple
@@ -277,15 +286,16 @@
             <div class="flex flex-wrap -m-4">
                 <div class="p-4 lg:w-1/4 md:w-1/2">
                     <div class="h-full flex flex-col items-center text-center">
-                        <div class="flex-grow h-full bg-gray-50 bg-opacity-75 px-8 pb-16 rounded-lg overflow-hidden">
-                            <div
-                                class="w-20 h-20 inline-flex items-center justify-center rounded-full flex-shrink-0">
+                        <div
+                            class="flex-grow h-full bg-white bg-opacity-75 px-8 pb-16 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100">
+                            <div class="w-20 h-20 inline-flex items-center justify-center rounded-full flex-shrink-0">
                                 <svg fill="none" stroke="url(#myGradient)" stroke-linecap="round"
                                     stroke-linejoin="round" stroke-width="2" class="w-10 h-10" viewBox="0 0 24 24">
                                     <path d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 002-2v-4M17 8l-5-5-5 5M12 4.2v10.3"></path>
                                 </svg>
                             </div>
-                            <h2 class="text-gray-900 text-lg title-font font-poppins font-semibold text-gradient mb-3">1. Upload</h2>
+                            <h2 class="text-gray-900 text-lg title-font font-poppins font-semibold text-gradient mb-3">
+                                1. Upload</h2>
                             <p class="leading-relaxed text-base font-poppins">Upload your PDF documents to our
                                 secure platform with a
                                 simple drag and drop.</p>
@@ -294,9 +304,9 @@
                 </div>
                 <div class="p-4 lg:w-1/4 md:w-1/2">
                     <div class="h-full flex flex-col items-center text-center">
-                        <div class="flex-grow h-full bg-gray-50 bg-opacity-75 px-8 pb-16 rounded-lg overflow-hidden">
-                            <div
-                                class="w-20 h-20 inline-flex items-center justify-center rounded-full flex-shrink-0">
+                        <div
+                            class="flex-grow h-full bg-white bg-opacity-75 px-8 pb-16 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100">
+                            <div class="w-20 h-20 inline-flex items-center justify-center rounded-full flex-shrink-0">
                                 <svg fill="none" stroke="url(#myGradient)" stroke-linecap="round"
                                     stroke-linejoin="round" stroke-width="2" class="w-10 h-10" viewBox="0 0 24 24">
                                     <path
@@ -304,7 +314,8 @@
                                     </path>
                                 </svg>
                             </div>
-                            <h2 class="text-gray-900 text-lg title-font font-poppins font-semibold text-gradient mb-3">2. Process</h2>
+                            <h2 class="text-gray-900 text-lg title-font font-poppins font-semibold text-gradient mb-3">
+                                2. Process</h2>
                             <p class="leading-relaxed text-base font-poppins">Our AI analyzes your document,
                                 understanding its
                                 content, structure, and context.</p>
@@ -313,16 +324,17 @@
                 </div>
                 <div class="p-4 lg:w-1/4 md:w-1/2">
                     <div class="h-full flex flex-col items-center text-center">
-                        <div class="flex-grow h-full bg-gray-50 bg-opacity-75 px-8 pb-16 rounded-lg overflow-hidden">
-                            <div
-                                class="w-20 h-20 inline-flex items-center justify-center rounded-full flex-shrink-0">
+                        <div
+                            class="flex-grow h-full bg-white bg-opacity-75 px-8 pb-16 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100">
+                            <div class="w-20 h-20 inline-flex items-center justify-center rounded-full flex-shrink-0">
                                 <svg fill="none" stroke="url(#myGradient)" stroke-linecap="round"
                                     stroke-linejoin="round" stroke-width="2" class="w-10 h-10" viewBox="0 0 24 24">
                                     <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
                                     <circle cx="12" cy="7" r="4"></circle>
                                 </svg>
                             </div>
-                            <h2 class="text-gray-900 text-lg title-font font-poppins font-semibold text-gradient mb-3">3. Ask</h2>
+                            <h2 class="text-gray-900 text-lg title-font font-poppins font-semibold text-gradient mb-3">
+                                3. Ask</h2>
                             <p class="leading-relaxed text-base font-poppins">Ask questions about your document
                                 in natural language
                                 as if you're chatting with a colleague.</p>
@@ -331,9 +343,9 @@
                 </div>
                 <div class="p-4 lg:w-1/4 md:w-1/2">
                     <div class="h-full flex flex-col items-center text-center">
-                        <div class="flex-grow h-full bg-gray-50 bg-opacity-75 px-8 pb-16 rounded-lg overflow-hidden">
-                            <div
-                                class="w-20 h-20 inline-flex items-center justify-center rounded-full flex-shrink-0">
+                        <div
+                            class="flex-grow h-full bg-white bg-opacity-75 px-8 pb-16 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100">
+                            <div class="w-20 h-20 inline-flex items-center justify-center rounded-full flex-shrink-0">
                                 <svg fill="none" stroke="url(#myGradient)" stroke-linecap="round"
                                     stroke-linejoin="round" stroke-width="2" class="w-10 h-10" viewBox="0 0 24 24">
                                     <path
@@ -341,7 +353,8 @@
                                     </path>
                                 </svg>
                             </div>
-                            <h2 class="text-gray-900 text-lg title-font font-poppins font-semibold text-gradient mb-3">4. Get Answers</h2>
+                            <h2 class="text-gray-900 text-lg title-font font-poppins font-semibold text-gradient mb-3">
+                                4. Get Answers</h2>
                             <p class="leading-relaxed text-base font-poppins">Receive instant, accurate answers
                                 with references to
                                 the specific parts of your document.</p>
@@ -359,17 +372,24 @@
     <!-- HOW IT WORKS END -->
 
     <!-- FOOTER  -->
-    <footer class="text-gray-600 body-font bg-gray-50">
-        <div class="container px-5 py-8 mx-auto flex flex-col sm:flex-row items-center justify-between">
-            <p class="text-sm text-gray-500 sm:ml-4 sm:pl-4 sm:py-2 sm:mt-0 mt-4 font-poppins">©
-                2025 ChatPDF — Created <a href="https://bagusdevaa.github.io/personal-portofolio/" class="">by
-                    @bagusdeva</a>
-            </p>
-            <a href="#" class="text-sm text-gray-500 mt-4 sm:mt-0 font-poppins" rel="noopener noreferrer"
-                target="_blank">Terms &
-                Privacy</a>
+    <footer class="bg-white shadow-inner py-6">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <p class="text-gray-600 text-sm">©
+                        2025 ChatPDF — Created <a href="https://bagusdevaa.github.io/personal-portofolio/" class="">by
+                            @bagusdeva</a>
+                    </p>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-600 hover:text-[#4f46e5]">Terms</a>
+                    <a href="#" class="text-gray-600 hover:text-[#4f46e5]">Privacy</a>
+                    <a href="#" class="text-gray-600 hover:text-[#4f46e5]">Help</a>
+                </div>
+            </div>
         </div>
-    </footer> <!-- FOOTER END  -->
+    </footer>
+    <!-- FOOTER END  -->
 
     <!-- Scroll Animation Script -->
     <script>

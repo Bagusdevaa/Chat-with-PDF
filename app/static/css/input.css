@@ -126,6 +126,72 @@
     font-style: italic;
 }
 
+/* For PDF Viewer */
+#pdf-container {
+    overflow: auto;
+    background-color: #525659;
+}
+
+#pdf-viewer {
+    margin: 0 auto;
+}
+
+.pdf-page {
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Resizer for split view */
+#resizer {
+    width: 6px;
+    background-color: #e5e7eb;
+    cursor: col-resize;
+    transition: background-color 0.2s;
+}
+
+#resizer:hover,
+#resizer.active {
+    background-color: rgba(79, 70, 229, 0.4);
+}
+
+/* Message styles */
+.message-user {
+    background: linear-gradient(to right, rgba(79, 70, 229, 0.1), rgba(147, 51, 234, 0.1));
+    border-left: 3px solid #4f46e5;
+}
+
+.message-ai {
+    background: #f9fafb;
+    border-left: 3px solid #9333ea;
+}
+
+/* Hide scrollbar but keep functionality */
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Custom scrollbar for the chat panel */
+.chat-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.chat-scrollbar::-webkit-scrollbar-thumb {
+    background: #c7c7c7;
+    border-radius: 10px;
+}
+
+.chat-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
 
 /* Animation styles */
 @keyframes fadeIn {
@@ -221,4 +287,12 @@
 
 .reveal-bottom.active {
     transform: translateY(0);
+}
+
+/* Menghilangkan icon mata default dari browser */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear,
+input[type="password"]::-webkit-contacts-auto-fill-button,
+input[type="password"]::-webkit-credentials-auto-fill-button {
+    display: none !important;
 }
