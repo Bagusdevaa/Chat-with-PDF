@@ -23,7 +23,10 @@ def create_app():
 
     from app.models import user
     from app.routes.auth import auth
+    from app.routes.main import main
+
     app.register_blueprint(auth, url_prefix='/auth')
+    app.register_blueprint(main)
     
     return app
     # Ensure upload directory exists
