@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with PDF - PDF Assistant</title>
+    <meta name="description" content="Chat with your PDF document using AI assistant">
+    <link rel="icon" type="image/png"
+        href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/svgs/solid/file-pdf.svg">
+    <link href="{{ url_for('static', filename='css/input.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css" rel="stylesheet">
+    <!-- PDF.js library for PDF rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+    <script>
+        // Set worker path for PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+    </script>
+    <style>
+
+    </style>
+</head>
+<body class="bg-gray-100 font-poppins flex flex-col h-screen overflow-hidden">
+    <!-- Define SVG Gradients -->
+    <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
+        <linearGradient id="myGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#4f46e5" />
+            <stop offset="100%" style="stop-color:#9333ea" />
+        </linearGradient>
+    </svg>
+    
+    <!-- NAVBAR -->
+    <header class="bg-white shadow">
+        <div class="container mx-auto flex p-4 items-center justify-between">
+            <!-- Logo on the left -->
+            <a href="/" class="flex title-font font-poppins-medium items-center text-gray-900">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="url(#myGradient)" stroke-linecap="round"
+                    stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2 rounded-full"
+                    viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                </svg>
+                <span class="ml-3 text-xl font-poppins font-bold">PDF ASSISTANT</span>
+            </a>
+
+            <!-- Document info - Center -->
+            <div class="hidden md:flex items-center">
+                <h1 class="text-lg font-semibold max-w-md truncate" id="pdf-title">Research Paper.pdf</h1>
+            </div>
+
+            <!-- Navigation -->
+            <div class="flex items-center space-x-3">
+                <a href="/documents" class="hover:text-[#4f46e5] transition-colors duration-200 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-1">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                    </svg>
+                    <span class="hidden sm:inline">Back to Documents</span>
+                </a>
+                
+                <button id="download-btn" class="hover:text-[#4f46e5] transition-colors duration-200 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-1">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                    </svg>
+                    <span class="hidden sm:inline">Download Chat</span>
+                </button>
+            </div>
+        </div>
+    </header>    <!-- Main Content - Split View -->
+    <main class="flex-grow flex flex-col md:flex-row overflow-hidden">
+        <!-- PDF Viewer with Toolbar -->
+        <div id="pdf-panel" class="flex flex-col w-full md:w-1/2 border-r border-gray-200 overflow-hidden">
+            <!-- PDF Toolbar -->
+            <div class="bg-white p-3 flex items-center justify-between border-b border-gray-200">
+                <div class="flex items-center space-x-2">
+                    <button id="zoom-out" class="p-1.5 hover:bg-gray-100 rounded-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
+                        </svg>
+                    </button>
+                    <span id="zoom-level" class="text-sm">100%</span>
+                    <button id="zoom-in" class="p-1.5 hover:bg-gray-100 rounded-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="flex items-center space-x-2">
+                    <button id="prev-page" class="p-1.5 hover:bg-gray-100 rounded-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                        </svg>
+                    </button>
+                    <span id="page-info" class="text-sm">Page 1 of 10</span>
+                    <button id="next-page" class="p-1.5 hover:bg-gray-100 rounded-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- PDF Container -->
+            <div id="pdf-container" class="flex-grow overflow-auto">
+                <div id="pdf-viewer" class="flex flex-col items-center p-4">
+                    <!-- PDF pages will be rendered here -->
+                    <div class="flex items-center justify-center h-full">
+                        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+                        <span class="ml-3 text-gray-700">Loading PDF...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Resizer -->
+        <div id="resizer" class="hidden md:block"></div>
+        
+        <!-- Chat Panel -->
+        <div id="chat-panel" class="flex flex-col w-full md:w-1/2 h-full">
+            <!-- Chat Messages -->
+            <div id="chat-messages" class="flex-grow overflow-y-auto bg-white p-4 chat-scrollbar">
+                <!-- Welcome Message -->
+                <div class="message-ai p-4 rounded-lg mb-4">
+                    <div class="flex items-start">
+                        <div class="bg-gradient-to-r from-[#4f46e5] to-[#9333ea] rounded-full w-8 h-8 flex items-center justify-center text-white mr-3 flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="font-medium mb-1">AI Assistant</div>
+                            <div class="text-gray-700">
+                                Hello! I'm your PDF Assistant. I've analyzed your document and I'm ready to answer any questions you might have about it. Feel free to ask anything!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sample User Message -->
+                <div class="message-user p-4 rounded-lg mb-4">
+                    <div class="flex items-start">
+                        <div class="bg-gradient-to-r from-[#4f46e5] to-[#9333ea] rounded-full w-8 h-8 flex items-center justify-center text-white mr-3 flex-shrink-0">
+                            <span class="text-sm font-medium">JD</span>
+                        </div>
+                        <div>
+                            <div class="font-medium mb-1">You</div>
+                            <div class="text-gray-700">
+                                What is the main topic of this research paper?
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sample AI Response -->
+                <div class="message-ai p-4 rounded-lg mb-4">
+                    <div class="flex items-start">
+                        <div class="bg-gradient-to-r from-[#4f46e5] to-[#9333ea] rounded-full w-8 h-8 flex items-center justify-center text-white mr-3 flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="font-medium mb-1">AI Assistant</div>
+                            <div class="text-gray-700">
+                                <p>This research paper focuses on the applications of large language models (LLMs) in scientific research, particularly in data analysis and hypothesis generation.</p>
+                                <p class="mt-2">The authors explore how AI can assist researchers by analyzing vast amounts of scientific literature, identifying patterns that might be missed by human researchers, and suggesting novel research directions.</p>
+                                <p class="mt-2">The paper also discusses the limitations of current AI models and ethical considerations when applying AI in scientific research.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- More messages would be added here dynamically -->
+            </div>
+            
+            <!-- Chat Input -->
+            <div class="bg-white border-t border-gray-200 p-4 sticky bottom-0">
+                <form id="chat-form" class="flex items-end">
+                    <div class="relative flex-grow">
+                        <textarea id="message-input" rows="3" placeholder="Ask a question about your document..." class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"></textarea>
+                    </div>
+                    <button type="submit" class="ml-3 bg-gradient-to-r from-[#4f46e5] to-[#9333ea] text-white px-4 py-3 rounded-lg hover:opacity-90 transition-opacity flex-shrink-0 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // PDF Loading and Rendering
+            let pdfDoc = null;
+            let pageNum = 1;
+            let pageRendering = false;
+            let pageNumPending = null;
+            let scale = 1.0;
+            const pdfContainer = document.getElementById('pdf-container');
+            const pdfViewer = document.getElementById('pdf-viewer');
+            const zoomIn = document.getElementById('zoom-in');
+            const zoomOut = document.getElementById('zoom-out');
+            const zoomLevel = document.getElementById('zoom-level');
+            const prevPage = document.getElementById('prev-page');
+            const nextPage = document.getElementById('next-page');
+            const pageInfo = document.getElementById('page-info');
+            const pdfTitle = document.getElementById('pdf-title');
+
+            // PDF URL (this would be dynamically set from server)
+            // Using a placeholder path - you would replace this with the actual PDF path
+            const url = '{{ url_for("static", filename="uploads/sample.pdf") }}';
+
+            // Initialize PDF.js
+            pdfjsLib.getDocument(url).promise.then(function(pdf) {
+                pdfDoc = pdf;
+                pageInfo.textContent = `Page ${pageNum} of ${pdf.numPages}`;
+                
+                // Initial render
+                renderPage(pageNum);
+            }).catch(function(error) {
+                console.error('Error loading PDF:', error);
+                pdfViewer.innerHTML = '<div class="text-center text-red-500">Error loading PDF. Please try again.</div>';
+            });            // Render a page
+            function renderPage(num) {
+                pageRendering = true;
+                
+                // Remove loading spinner when first page is rendered
+                if (num === 1) {
+                    pdfViewer.innerHTML = '';
+                }
+                
+                pdfDoc.getPage(num).then(function(page) {
+                    const viewport = page.getViewport({ scale: scale });
+                    
+                    // Create canvas for this page
+                    const canvas = document.createElement('canvas');
+                    canvas.className = 'pdf-page';
+                    const context = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    
+                    // Add page to viewer
+                    pdfViewer.appendChild(canvas);
+                    
+                    // Render PDF page into canvas context
+                    const renderContext = {
+                        canvasContext: context,
+                        viewport: viewport
+                    };
+                    
+                    page.render(renderContext).promise.then(function() {
+                        pageRendering = false;
+                        
+                        // Check if there's a pending page waiting to be rendered
+                        if (pageNumPending !== null) {
+                            renderPage(pageNumPending);
+                            pageNumPending = null;
+                        }
+                    });
+                });
+                
+                // Update page info
+                pageInfo.textContent = `Page ${num} of ${pdfDoc.numPages}`;
+            }
+            
+            // Adjust chat-messages height on window load and resize
+            function adjustChatMessagesHeight() {
+                const chatMessages = document.getElementById('chat-messages');
+                const header = document.querySelector('header');
+                const chatForm = document.querySelector('#chat-form').closest('div');
+                
+                const availableHeight = window.innerHeight - header.offsetHeight - chatForm.offsetHeight;
+                chatMessages.style.height = `${availableHeight}px`;
+            }
+
+            // Go to previous page
+            function onPrevPage() {
+                if (pageNum <= 1) {
+                    return;
+                }
+                pageNum--;
+                queueRenderPage(pageNum);
+            }
+
+            // Go to next page
+            function onNextPage() {
+                if (pageNum >= pdfDoc.numPages) {
+                    return;
+                }
+                pageNum++;
+                queueRenderPage(pageNum);
+            }
+
+            // Queue the page rendering
+            function queueRenderPage(num) {
+                if (pageRendering) {
+                    pageNumPending = num;
+                } else {
+                    pdfViewer.innerHTML = ''; // Clear the viewer
+                    renderPage(num);
+                }
+            }
+
+            // Zoom in
+            function onZoomIn() {
+                if (scale >= 2.0) return;
+                scale += 0.1;
+                zoomLevel.textContent = `${Math.round(scale * 100)}%`;
+                queueRenderPage(pageNum);
+            }
+
+            // Zoom out
+            function onZoomOut() {
+                if (scale <= 0.5) return;
+                scale -= 0.1;
+                zoomLevel.textContent = `${Math.round(scale * 100)}%`;
+                queueRenderPage(pageNum);
+            }
+
+            // Add event listeners
+            prevPage.addEventListener('click', onPrevPage);
+            nextPage.addEventListener('click', onNextPage);
+            zoomIn.addEventListener('click', onZoomIn);
+            zoomOut.addEventListener('click', onZoomOut);
+
+            // Resizable split view
+            const resizer = document.getElementById('resizer');
+            const pdfPanel = document.getElementById('pdf-panel');
+            const chatPanel = document.getElementById('chat-panel');
+            let isResizing = false;
+
+            resizer.addEventListener('mousedown', function(e) {
+                isResizing = true;
+                resizer.classList.add('active');
+                document.body.style.cursor = 'col-resize';
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+                e.preventDefault();
+            });
+
+            function onMouseMove(e) {
+                if (!isResizing) return;
+                
+                const containerWidth = document.querySelector('main').offsetWidth;
+                let newPdfWidth = e.clientX;
+                
+                // Calculate percentage of the container width
+                let percentage = (newPdfWidth / containerWidth) * 100;
+                
+                // Limit the minimum and maximum width
+                if (percentage < 20) percentage = 20;
+                if (percentage > 80) percentage = 80;
+                
+                // Apply the new widths
+                pdfPanel.style.width = `${percentage}%`;
+                chatPanel.style.width = `${100 - percentage}%`;
+            }
+
+            function onMouseUp() {
+                isResizing = false;
+                resizer.classList.remove('active');
+                document.body.style.cursor = '';
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            }
+
+            // Chat functionality
+            const chatForm = document.getElementById('chat-form');
+            const messageInput = document.getElementById('message-input');
+            const chatMessages = document.getElementById('chat-messages');
+            const userInitials = 'JD'; // This would come from the user's name
+            
+            chatForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const message = messageInput.value.trim();
+                if (message === '') return;
+                
+                // Add user message to chat
+                addMessage('user', message);
+                
+                // Clear input
+                messageInput.value = '';
+                
+                // In a real app, you would send this message to your backend API
+                // For this demo, we'll simulate an AI response after a short delay
+                setTimeout(() => {
+                    // Simulate AI thinking with loading indicator
+                    const loadingMessage = document.createElement('div');
+                    loadingMessage.className = 'message-ai p-4 rounded-lg mb-4 loading-message';
+                    loadingMessage.innerHTML = `
+                        <div class="flex items-start">
+                            <div class="bg-gradient-to-r from-[#4f46e5] to-[#9333ea] rounded-full w-8 h-8 flex items-center justify-center text-white mr-3 flex-shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="font-medium mb-1">AI Assistant</div>
+                                <div class="text-gray-700 flex items-center">
+                                    <div class="animate-pulse flex space-x-1">
+                                        <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+                                        <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+                                        <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    chatMessages.appendChild(loadingMessage);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    
+                    // Simulate AI response after 1-2 seconds
+                    setTimeout(() => {
+                        // Remove loading message
+                        chatMessages.removeChild(loadingMessage);
+                        
+                        // Generate demo response (in a real app, this would come from your backend)
+                        let response;
+                        if (message.toLowerCase().includes('summary')) {
+                            response = "This document discusses advancements in AI technology and its applications in various fields including healthcare, finance, and education. The paper highlights both the opportunities and challenges associated with widespread AI adoption.";
+                        } else if (message.toLowerCase().includes('author')) {
+                            response = "The authors of this paper are Dr. Sarah Johnson from MIT, Dr. Michael Lee from Stanford University, and Dr. Emma Chen from Google Research.";
+                        } else if (message.toLowerCase().includes('conclusion')) {
+                            response = "In the conclusion, the authors suggest that responsible AI development requires a multidisciplinary approach involving technical experts, ethicists, policy makers, and end users. They advocate for transparent AI systems and ongoing research into mitigating bias and ensuring fairness.";
+                        } else {
+                            response = "Based on the document, I can see that your question relates to the central themes discussed. The research explores how AI technologies can be leveraged across various industries while maintaining ethical standards and addressing concerns about automation's impact on employment.";
+                        }
+                        
+                        addMessage('ai', response);
+                    }, 1500);
+                }, 500);
+            });
+            
+            function addMessage(sender, text) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = sender === 'user' ? 'message-user p-4 rounded-lg mb-4' : 'message-ai p-4 rounded-lg mb-4';
+                
+                let avatar;
+                if (sender === 'user') {
+                    avatar = `
+                        <div class="bg-gradient-to-r from-[#4f46e5] to-[#9333ea] rounded-full w-8 h-8 flex items-center justify-center text-white mr-3 flex-shrink-0">
+                            <span class="text-sm font-medium">${userInitials}</span>
+                        </div>
+                    `;
+                } else {
+                    avatar = `
+                        <div class="bg-gradient-to-r from-[#4f46e5] to-[#9333ea] rounded-full w-8 h-8 flex items-center justify-center text-white mr-3 flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
+                            </svg>
+                        </div>
+                    `;
+                }
+                
+                messageDiv.innerHTML = `
+                    <div class="flex items-start">
+                        ${avatar}
+                        <div>
+                            <div class="font-medium mb-1">${sender === 'user' ? 'You' : 'AI Assistant'}</div>
+                            <div class="text-gray-700">
+                                ${text}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            // Download chat history
+            const downloadBtn = document.getElementById('download-btn');
+            
+            downloadBtn.addEventListener('click', function() {
+                // Get all messages
+                const messages = document.querySelectorAll('.message-user, .message-ai');
+                let chatText = "# Chat History with PDF Assistant\n\n";
+                
+                messages.forEach(msg => {
+                    const sender = msg.classList.contains('message-user') ? 'You' : 'AI Assistant';
+                    const content = msg.querySelector('.text-gray-700').textContent.trim();
+                    chatText += `## ${sender}:\n${content}\n\n`;
+                });
+                
+                // Create blob and download
+                const blob = new Blob([chatText], { type: 'text/markdown' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'chat-history.md';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });            // Textarea auto-resize
+            const textarea = document.getElementById('message-input');
+            
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+                
+                // Reset if empty
+                if (this.value === '') {
+                    this.style.height = 'auto';
+                }
+                
+                // Readjust chat area height when textarea changes size
+                adjustChatMessagesHeight();
+            });
+            
+            // Allow Enter key to submit, but Shift+Enter for new line
+            textarea.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    chatForm.dispatchEvent(new Event('submit'));
+                }
+            });
+            
+            // Initial adjustment and listen for window resize
+            adjustChatMessagesHeight();
+            window.addEventListener('resize', adjustChatMessagesHeight);
+        });
+    </script>
+</body>
+</html>
