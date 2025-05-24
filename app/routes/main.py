@@ -28,6 +28,11 @@ def signup():
     # Placeholder route for signup page - will be implemented in future
     return render_template('signup.html')
 
+@main.route('/forgotpassword')
+def forgotpassword():
+    # Placeholder route for forgotpassword page - will be implemented in future
+    return render_template('forgot_password.html')
+
 @main.route('/profile')
 def profile():
     # Placeholder route for profile page
