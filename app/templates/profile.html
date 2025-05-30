@@ -21,10 +21,10 @@
     </svg>
     
     <!-- NAVBAR -->
-    <header class="bg-white shadow">
+    <header class="text-gray-600 body-font left-0 w-full z-50 bg-white shadow">
         <div class="container mx-auto flex p-5 items-center justify-between">
             <!-- Logo on the left -->
-            <a href="/" class="flex title-font font-poppins-medium items-center text-gray-900">
+            <a href="/" class="flex title-font font-poppins items-center text-gray-900">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="url(#myGradient)" stroke-linecap="round"
                     stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2 rounded-full"
                     viewBox="0 0 24 24">
@@ -60,11 +60,16 @@
             </div>
 
             <!-- Desktop navigation -->
-            <nav class="hidden md:flex items-center space-x-5 font-poppins font-normal">
-                <a href="/documents" class="hover:text-[#4f46e5] transition-colors duration-200">My Documents</a>
-                <a href="/profile" class="text-[#4f46e5] transition-colors duration-200">Profile</a>
-                <a href="/logout" class="hover:text-[#4f46e5] transition-colors duration-200 ml-4">Logout</a>
-            </nav>
+             <div class="flex flex-col">
+                 <nav class="hidden md:flex space-x-5 font-poppins font-normal">
+                     <a href="/documents" class="hover:text-[#4f46e5] transition-colors duration-200">Documents</a>
+                     <a href="/profile" class="text-[#4f46e5] transition-colors duration-200">Profile</a>
+                 </nav>
+             </div>
+            
+             <div class="flex flex-col items-start">
+                 <a href="/logout" class="hover:text-[#4f46e5] transition-colors duration-200 ml-4 font-poppins font-normal">Logout</a>
+             </div>
 
             <!-- Overlay for mobile menu -->
             <div id="menu-overlay"
