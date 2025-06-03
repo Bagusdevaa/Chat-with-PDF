@@ -211,8 +211,8 @@ def upload_document():
         file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], unique_filename)
           # Save the file
         file.save(file_path)
-        
-        # Process the PDF for AI conversation
+          # Process the PDF for AI conversation
+        processed_successfully = False
         try:
             # Process PDF content for AI conversation
             print(f"Processing PDF for AI: {original_filename}")
@@ -233,6 +233,7 @@ def upload_document():
                 'upload_time': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             }
             
+            processed_successfully = True
             print(f"PDF processed successfully. Session ID: {session_id}")
             
         except Exception as e:
@@ -248,7 +249,8 @@ def upload_document():
             file_path=file_path,
             file_size=os.path.getsize(file_path),
             upload_date=datetime.now(timezone.utc),
-            session_id=session_id
+            session_id=session_id,
+            processed=processed_successfully  # Set processed status based on AI processing success
         )
         
         db.session.add(document)
@@ -884,11 +886,11 @@ def process_document_for_ai(document_id):
                 'pdf_name': document.original_filename,
                 'upload_time': document.upload_date.strftime("%Y-%m-%d %H:%M:%S")
             }
-            
-            # Update document with session_id if it didn't have one
+              # Update document with session_id and processed status
             if not document.session_id:
                 document.session_id = session_id
-                db.session.commit()
+            document.processed = True  # Mark as processed after successful AI processing
+            db.session.commit()
             
             print(f"PDF processed successfully. Session ID: {session_id}")
             
