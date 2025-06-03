@@ -54,7 +54,7 @@
 
                     <!-- Auth buttons -->
                     <div class="flex flex-col items-start space-y-4 mt-8">
-                        <a href="/logout" class="hover:text-[#4f46e5] transition-colors duration-200">Logout</a>
+                        <a href="{{ url_for('auth.logout') }}" class="hover:text-[#4f46e5] transition-colors duration-200">Logout</a>
                     </div>
                 </div>
             </div>
@@ -68,7 +68,7 @@
              </div>
             
              <div class="flex flex-col items-start">
-                 <a href="/logout" class="hover:text-[#4f46e5] transition-colors duration-200 ml-4 font-poppins font-normal">Logout</a>
+                 <a href="{{ url_for('auth.logout') }}" class="hover:text-[#4f46e5] transition-colors duration-200 ml-4 font-poppins font-normal">Logout</a>
              </div>
 
             <!-- Overlay for mobile menu -->
@@ -90,14 +90,13 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <!-- Left Column - User Info -->
             <div class="col-span-1">
-                <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 p-6">
-                    <!-- User Avatar -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 p-6">                    <!-- User Avatar -->
                     <div class="flex flex-col items-center mb-6">
-                        <div class="w-32 h-32 bg-gradient-to-r from-[#4f46e5] to-[#9333ea] rounded-full flex items-center justify-center text-white text-4xl font-bold mb-4">
+                        <div class="user-avatar w-32 h-32 bg-gradient-to-r from-[#4f46e5] to-[#9333ea] rounded-full flex items-center justify-center text-white text-4xl font-bold mb-4">
                             JD
                         </div>
-                        <h2 class="text-xl font-bold">John Doe</h2>
-                        <p class="text-gray-500">john.doe@example.com</p>
+                        <h2 class="user-name text-xl font-bold">John Doe</h2>
+                        <p class="user-email text-gray-500">john.doe@example.com</p>
                         
                         <!-- Upload Photo Button -->
                         <label for="avatar-upload" class="cursor-pointer mt-4">
@@ -113,50 +112,47 @@
                     
                     <!-- Account Stats -->
                     <div class="border-t border-gray-100 pt-4">
-                        <h3 class="text-md font-semibold mb-3">Account Information</h3>
-                        <div class="space-y-2">
+                        <h3 class="text-md font-semibold mb-3">Account Information</h3>                        <div class="space-y-2">
                             <div class="flex justify-between">
                                 <span class="text-gray-600">Member Since</span>
-                                <span class="font-medium">May 15, 2025</span>
+                                <span class="member-since font-medium">May 15, 2025</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-600">Documents</span>
-                                <span class="font-medium">12</span>
+                                <span class="documents-count font-medium">12</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-600">Storage Used</span>
-                                <span class="font-medium">45.8 MB</span>
+                                <span class="storage-used font-medium">45.8 MB</span>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Danger Zone -->
+                      <!-- Danger Zone -->
                     <div class="border-t border-gray-100 mt-6 pt-6">
                         <h3 class="text-md font-semibold text-red-500 mb-2">Danger Zone</h3>
-                        <button class="text-red-500 hover:text-red-700 text-sm font-medium">Delete Account</button>
+                        <button id="delete-account-btn" class="text-red-500 hover:text-red-700 text-sm font-medium">Delete Account</button>
                     </div>
                 </div>
             </div>
             
             <!-- Right Column - Settings Forms -->
-            <div class="col-span-1 md:col-span-2 space-y-8">
-                <!-- Personal Information Form -->
+            <div class="col-span-1 md:col-span-2 space-y-8">                <!-- Personal Information Form -->
                 <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 p-6">
                     <h2 class="text-xl font-bold mb-6">Personal Information</h2>
-                    <form class="space-y-4">
+                    <form id="personal-info-form" class="space-y-4">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label for="first-name" class="text-sm text-gray-600 block mb-1">First Name</label>
-                                <input type="text" id="first-name" value="John" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                <input type="text" id="first-name" name="first_name" value="John" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
                             </div>
                             <div>
                                 <label for="last-name" class="text-sm text-gray-600 block mb-1">Last Name</label>
-                                <input type="text" id="last-name" value="Doe" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                <input type="text" id="last-name" name="last_name" value="Doe" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
                             </div>
                         </div>
                         <div>
                             <label for="email" class="text-sm text-gray-600 block mb-1">Email Address</label>
-                            <input type="email" id="email" value="john.doe@example.com" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <input type="email" id="email" name="email" value="john.doe@example.com" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
                         </div>
                         <div class="mt-6">
                             <button type="submit" class="bg-gradient-to-r from-[#4f46e5] to-[#9333ea] text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity">
@@ -165,22 +161,21 @@
                         </div>
                     </form>
                 </div>
-                
-                <!-- Change Password Form -->
+                  <!-- Change Password Form -->
                 <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 p-6">
                     <h2 class="text-xl font-bold mb-6">Change Password</h2>
-                    <form class="space-y-4">
+                    <form id="password-form" class="space-y-4">
                         <div>
                             <label for="current-password" class="text-sm text-gray-600 block mb-1">Current Password</label>
-                            <input type="password" id="current-password" placeholder="Enter your current password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <input type="password" id="current-password" name="current_password" placeholder="Enter your current password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
                         </div>
                         <div>
                             <label for="new-password" class="text-sm text-gray-600 block mb-1">New Password</label>
-                            <input type="password" id="new-password" placeholder="Enter a new password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <input type="password" id="new-password" name="new_password" placeholder="Enter a new password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
                         </div>
                         <div>
                             <label for="confirm-password" class="text-sm text-gray-600 block mb-1">Confirm New Password</label>
-                            <input type="password" id="confirm-password" placeholder="Confirm your new password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <input type="password" id="confirm-password" name="confirm_password" placeholder="Confirm your new password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
                         </div>
                         <div class="mt-6">
                             <button type="submit" class="bg-gradient-to-r from-[#4f46e5] to-[#9333ea] text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity">
@@ -189,38 +184,37 @@
                         </div>
                     </form>
                 </div>
-                
-                <!-- Notification Preferences -->
+                  <!-- Notification Preferences -->
                 <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 p-6">
                     <h2 class="text-xl font-bold mb-6">Notification Preferences</h2>
-                    <form class="space-y-4">
+                    <form id="notification-form" class="space-y-4">
                         <div class="flex items-center justify-between py-2">
                             <div>
                                 <h3 class="font-medium">Email Notifications</h3>
                                 <p class="text-sm text-gray-500">Receive email notifications about your account</p>
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" class="sr-only peer" checked>
+                                <input type="checkbox" name="email_notifications" class="sr-only peer" checked>
                                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r from-[#4f46e5] to-[#9333ea]"></div>
                             </label>
                         </div>
                         <div class="flex items-center justify-between py-2">
                             <div>
-                                <h3 class="font-medium">Document Notifications</h3>
+                                <h3 class="font-medium">Push Notifications</h3>
                                 <p class="text-sm text-gray-500">Get notified when documents are processed</p>
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" class="sr-only peer" checked>
+                                <input type="checkbox" name="push_notifications" class="sr-only peer" checked>
                                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r from-[#4f46e5] to-[#9333ea]"></div>
                             </label>
                         </div>
                         <div class="flex items-center justify-between py-2">
                             <div>
-                                <h3 class="font-medium">Newsletter</h3>
+                                <h3 class="font-medium">Marketing Emails</h3>
                                 <p class="text-sm text-gray-500">Receive updates about new features and tips</p>
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" class="sr-only peer">
+                                <input type="checkbox" name="marketing_emails" class="sr-only peer">
                                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r from-[#4f46e5] to-[#9333ea]"></div>
                             </label>
                         </div>
@@ -252,54 +246,8 @@
                 </div>
             </div>
         </div>
-    </footer>
-
-    <!-- Mobile Menu Script -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const menuToggle = document.getElementById('menu-toggle');
-            const mobileMenuContainer = document.getElementById('mobile-menu-container');
-            const menuOverlay = document.getElementById('menu-overlay');
-
-            // Function to toggle mobile menu
-            function toggleMenu() {
-                const isOpen = mobileMenuContainer.classList.contains('translate-x-0');
-                
-                if (isOpen) {
-                    // Close menu
-                    mobileMenuContainer.classList.remove('translate-x-0');
-                    mobileMenuContainer.classList.add('translate-x-full');
-                    menuOverlay.classList.remove('opacity-50', 'pointer-events-auto');
-                    menuOverlay.classList.add('opacity-0', 'pointer-events-none');
-                } else {
-                    // Open menu
-                    mobileMenuContainer.classList.remove('translate-x-full');
-                    mobileMenuContainer.classList.add('translate-x-0');
-                    menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
-                    menuOverlay.classList.add('opacity-50', 'pointer-events-auto');
-                }
-            }
-
-            // Event listeners
-            menuToggle.addEventListener('click', toggleMenu);
-            menuOverlay.addEventListener('click', toggleMenu);
-
-            // File upload handling for avatar
-            const avatarUpload = document.getElementById('avatar-upload');
-            if (avatarUpload) {
-                avatarUpload.addEventListener('change', (e) => {
-                    if (e.target.files.length > 0) {
-                        const fileName = e.target.files[0].name;
-                        
-                        // Here you would typically submit the file via AJAX
-                        // For now, we'll just log to console
-                        console.log(`Avatar selected: ${fileName}`);
-                        
-                        // You can add code here to preview the image or submit it
-                    }
-                });
-            }
-        });
-    </script>
+    </footer>    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
 </body>
 </html>
