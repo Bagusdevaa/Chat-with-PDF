@@ -16,13 +16,25 @@ def singleobject(data):
 
 def register():
     try:
-        username = request.form.get('username')
-        email = request.form.get('email')
-        password = request.form.get('password')
+        # Get form data - support both JSON and form data
+        if request.is_json:
+            data = request.get_json()
+            first_name = data.get('first_name')
+            last_name = data.get('last_name')
+            email = data.get('email')
+            password = data.get('password')
+        else:
+            first_name = request.form.get('first_name')
+            last_name = request.form.get('last_name')
+            email = request.form.get('email')
+            password = request.form.get('password')
         
         # Check for required fields
-        if not username:
-            return response.error_response('Username is required')
+        if not first_name:
+            return response.error_response('First name is required')
+            
+        if not last_name:
+            return response.error_response('Last name is required')
         
         if not email:
             return response.error_response('Email is required')
@@ -30,25 +42,42 @@ def register():
         if not password:
             return response.error_response('Password is required')
 
+        # Check if user already exists
+        existing_user = User.query.filter_by(email=email).first()
+        if existing_user:
+            return response.error_response('Email already registered')
+
+        # Create username from first and last name
+        username = f"{first_name.strip()} {last_name.strip()}"
+
         # Create user object
         user = User(
-            username = username,
-            email = email
+            first_name=first_name.strip(),
+            last_name=last_name.strip(),
+            username=username,
+            email=email.lower().strip()
         )
 
         user.set_password(password)
         db.session.add(user)
         db.session.commit()
 
-        return response.success_response('', 'Account created successfully', 200)
+        return response.success_response('', 'Account created successfully', 201)
 
     except Exception as e:
+        db.session.rollback()
         return response.error_response(str(e))
 
 def login():
     try:
-        email = request.form.get('email')
-        password = request.form.get('password')
+        # Get form data - support both JSON and form data
+        if request.is_json:
+            data = request.get_json()
+            email = data.get('email')
+            password = data.get('password')
+        else:
+            email = request.form.get('email')
+            password = request.form.get('password')
 
         user = User.query.filter_by(email=email).first()
         if not user:
@@ -56,11 +85,12 @@ def login():
         
         if not user.check_password(password):
             return response.error_response("Invalid password", 401)
-        
         data = singleobject(user)
 
-        expires = datetime.timedelta(days = 1)
-        expires_refresh = datetime.timedelta(days = 10)        # Use user ID as the identity (subject for the token)
+        expires = timedelta(days=1)
+        expires_refresh = timedelta(days=10)
+        
+        # Use user ID as the identity (subject for the token)
         access_token = create_access_token(identity=str(user.id), expires_delta=expires)
         refresh_token = create_refresh_token(identity=str(user.id), expires_delta=expires_refresh)
         

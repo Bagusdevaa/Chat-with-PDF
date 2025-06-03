@@ -42,10 +42,9 @@ def create_app():
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(int(user_id))
-        
-    # Register blueprints
-    app.register_blueprint(auth, url_prefix='/auth')
+      # Register blueprints
     app.register_blueprint(main)
+    app.register_blueprint(auth)
     app.register_blueprint(api, url_prefix='/api')
     
     return app

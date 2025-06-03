@@ -1,15 +1,19 @@
-from flask import Blueprint, request, jsonify, render_template, redirect, url_for, flash, session
+from flask import Blueprint, request, jsonify, render_template, redirect, url_for, flash, session, current_app
 from flask_login import login_user, logout_user, current_user, login_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.models.user import User
+from app.models.documents import Document
 from app.response import success_response, error_response
 from app import db
 from app.controller import usercontroller
 from datetime import datetime, timezone
 import uuid
+import os
 
 auth = Blueprint('auth', __name__)
 
 @auth.route('/register', methods=['GET', 'POST'])
+@auth.route('/signup', methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
         if current_user.is_authenticated:
@@ -88,5 +92,9 @@ def reset_password(token):
         user.set_password(password)
         user.clear_reset_token()
         db.session.commit()
-        
         return success_response('', 'Your password has been reset. Please login with your new password.', 200)
+
+@auth.route('/login-test', methods=['GET'])
+def login_test():
+    """Simple test route for debugging"""
+    return "Login test route works!"
