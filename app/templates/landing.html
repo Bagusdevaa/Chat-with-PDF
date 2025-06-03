@@ -60,10 +60,9 @@
                             class="hover:text-[#4f46e5] transition-colors duration-200 scroll-link">How It Works</a>
                     </nav>
 
-                    <!-- Auth buttons -->
-                    <div id="auth-buttons" class="flex flex-col items-start space-y-4 mt-8 font-poppins">
-                        <a href="/login" class="hover:text-[#4f46e5] transition-colors duration-200">Login</a>
-                        <a href="/signup"
+                    <!-- Auth buttons -->                    <div id="auth-buttons" class="flex flex-col items-start space-y-4 mt-8 font-poppins">
+                        <a href="{{ url_for('auth.login') }}" class="hover:text-[#4f46e5] transition-colors duration-200">Login</a>
+                        <a href="{{ url_for('auth.register') }}"
                             class="inline-flex items-center bg-gradient-to-r from-[#4f46e5] to-[#9333ea] border-0 py-1 px-3 focus:outline-none hover:opacity-90 rounded text-base text-white">
                             Sign Up
                         </a>
@@ -79,10 +78,9 @@
                     Works</a>
             </nav>
 
-            <!-- Desktop auth buttons -->
-            <div class="hidden md:flex items-center space-x-4 font-poppins font-normal">
-                <a href="/login" class="hover:text-[#4f46e5] transition-colors duration-200">Login</a>
-                <a href="/signup"
+            <!-- Desktop auth buttons -->            <div class="hidden md:flex items-center space-x-4 font-poppins font-normal">
+                <a href="{{ url_for('auth.login') }}" class="hover:text-[#4f46e5] transition-colors duration-200">Login</a>
+                <a href="{{ url_for('auth.register') }}"
                     class="inline-flex items-center bg-gradient-to-r from-[#4f46e5] to-[#9333ea] border-0 py-1 px-3 focus:outline-none hover:opacity-90 hover:scale-105 transition-all rounded text-base text-white">
                     Sign Up
                 </a>
@@ -149,7 +147,7 @@
     <!-- NAVBAR END -->
 
     <!-- HERO  -->
-    <section id="hero" class="relative min-h-screen w-full flex items-center justify-center  pt-16 md:pt-16 pt-32">
+    <section id="hero" class="relative min-h-screen w-full flex items-center justify-center md:pt-16 pt-32">
         <!-- Background elements (decorative) -->
         <div
             class="absolute top-20 right-0 w-72 h-72 bg-purple-100 rounded-full mix-blend-multiply filter blur-xl opacity-30">
@@ -195,7 +193,7 @@
     <section id="features" class="text-gray-600 body-font">
         <div class="container px-5 py-24 mx-auto">
             <div class="text-center mb-20">
-                <h1 class="sm:text-3xl text-2xl font-poppins font-semibold title-font text-gray-900 mb-4 text-gradient">
+                <h1 class="sm:text-3xl text-2xl font-poppins font-semibold title-font mb-4 text-gradient">
                     Key Features </h1>
                 <p class="text-base leading-relaxed xl:w-2/4 lg:w-3/4 mx-auto text-gray-500 font-poppins">
                     ChatPDF leverages advanced
@@ -215,7 +213,7 @@
                                 <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
                             </svg>
                         </div>
-                        <h2 class="text-gray-900 text-lg title-font font-poppins font-semibold text-gradient mb-3">
+                        <h2 class="text-lg title-font font-poppins font-semibold text-gradient mb-3">
                             Instant Answers</h2>
                         <p class="leading-relaxed text-base font-poppins">Get immediate answers to your
                             questions about any PDF
@@ -235,7 +233,7 @@
                                 <path d="M20 4L8.12 15.88M14.47 14.48L20 20M8.12 8.12L12 12"></path>
                             </svg>
                         </div>
-                        <h2 class="text-gray-900 text-lg title-font font-poppins font-semibold text-gradient mb-3">
+                        <h2 class="text-lg title-font font-poppins font-semibold text-gradient mb-3">
                             Multi-Document Analysis
                         </h2>
                         <p class="leading-relaxed text-base font-poppins">Upload multiple PDFs and chat across
@@ -255,7 +253,7 @@
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
                         </div>
-                        <h2 class="text-gray-900 text-lg title-font font-poppins font-semibold text-gradient mb-3">
+                        <h2 class="text-lg title-font font-poppins font-semibold text-gradient mb-3">
                             Secure & Private</h2>
                         <p class="leading-relaxed text-base font-poppins">Your documents remain private and
                             secure. We use advanced
@@ -273,7 +271,7 @@
     <section id="how-it-works" class="text-gray-600 body-font">
         <div class="container px-5 py-24 mx-auto">
             <div class="text-center mb-20">
-                <h1 class="sm:text-3xl text-2xl font-poppins font-semibold title-font text-gray-900 mb-4 text-gradient">
+                <h1 class="sm:text-3xl text-2xl font-poppins font-semibold title-font mb-4 text-gradient">
                     How It Works</h1>
                 <p class="text-base leading-relaxed xl:w-2/4 lg:w-3/4 mx-auto text-gray-500 font-poppins">
                     ChatPDF makes interacting
@@ -294,7 +292,7 @@
                                     <path d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 002-2v-4M17 8l-5-5-5 5M12 4.2v10.3"></path>
                                 </svg>
                             </div>
-                            <h2 class="text-gray-900 text-lg title-font font-poppins font-semibold text-gradient mb-3">
+                            <h2 class="text-lg title-font font-poppins font-semibold text-gradient mb-3">
                                 1. Upload</h2>
                             <p class="leading-relaxed text-base font-poppins">Upload your PDF documents to our
                                 secure platform with a
@@ -314,7 +312,7 @@
                                     </path>
                                 </svg>
                             </div>
-                            <h2 class="text-gray-900 text-lg title-font font-poppins font-semibold text-gradient mb-3">
+                            <h2 class="text-lg title-font font-poppins font-semibold text-gradient mb-3">
                                 2. Process</h2>
                             <p class="leading-relaxed text-base font-poppins">Our AI analyzes your document,
                                 understanding its
@@ -333,7 +331,7 @@
                                     <circle cx="12" cy="7" r="4"></circle>
                                 </svg>
                             </div>
-                            <h2 class="text-gray-900 text-lg title-font font-poppins font-semibold text-gradient mb-3">
+                            <h2 class="text-lg title-font font-poppins font-semibold text-gradient mb-3">
                                 3. Ask</h2>
                             <p class="leading-relaxed text-base font-poppins">Ask questions about your document
                                 in natural language
@@ -353,7 +351,7 @@
                                     </path>
                                 </svg>
                             </div>
-                            <h2 class="text-gray-900 text-lg title-font font-poppins font-semibold text-gradient mb-3">
+                            <h2 class="text-lg title-font font-poppins font-semibold text-gradient mb-3">
                                 4. Get Answers</h2>
                             <p class="leading-relaxed text-base font-poppins">Receive instant, accurate answers
                                 with references to
@@ -437,12 +435,14 @@
             }
 
             // First check when page loads
-            checkScroll();
-
-            // Check on scroll
+            checkScroll();        // Check on scroll
             window.addEventListener('scroll', checkScroll);
         });
     </script>
+    
+    <!-- JavaScript Modules -->
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/landing.js') }}"></script>
 </body>
 
 </html>
