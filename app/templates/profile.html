@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - PDF Assistant</title>
+    <meta name="description" content="Manage your profile settings for PDF Assistant.">
+    <link rel="icon" type="image/png"
+        href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/svgs/solid/file-pdf.svg">
+    <link href="{{ url_for('static', filename='css/input.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 font-poppins min-h-screen flex flex-col">
+    <!-- Define SVG Gradients -->
+    <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
+        <linearGradient id="myGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#4f46e5" />
+            <stop offset="100%" style="stop-color:#9333ea" />
+        </linearGradient>
+    </svg>
+    
+    <!-- NAVBAR -->
+    <header class="text-gray-600 body-font left-0 w-full z-50 bg-white shadow">
+        <div class="container mx-auto flex p-5 items-center justify-between">
+            <!-- Logo on the left -->
+            <a href="/" class="flex title-font font-poppins items-center text-gray-900">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="url(#myGradient)" stroke-linecap="round"
+                    stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2 rounded-full"
+                    viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                </svg>
+                <span class="ml-3 text-xl font-poppins font-bold">PDF ASSISTANT</span>
+            </a>
+
+            <!-- Hamburger button on the right -->
+            <button id="menu-toggle" class="md:hidden focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7">
+                    </path>
+                </svg>
+            </button>
+
+            <!-- Mobile menu -->
+            <div id="mobile-menu-container"
+                class="fixed top-0 right-0 w-64 h-full bg-white shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out z-50">
+                <div class="flex flex-col h-full pt-20 px-6">
+                    <!-- Navigation menu -->
+                    <nav id="mobile-menu" class="flex flex-col space-y-4">
+                        <a href="/documents" class="hover:text-[#4f46e5] transition-colors duration-200">My Documents</a>
+                        <a href="/profile" class="text-[#4f46e5] transition-colors duration-200">Profile</a>
+                    </nav>
+
+                    <!-- Auth buttons -->
+                    <div class="flex flex-col items-start space-y-4 mt-8">
+                        <a href="{{ url_for('auth.logout') }}" class="hover:text-[#4f46e5] transition-colors duration-200">Logout</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Desktop navigation -->
+             <div class="flex flex-col">
+                 <nav class="hidden md:flex space-x-5 font-poppins font-normal">
+                     <a href="/documents" class="hover:text-[#4f46e5] transition-colors duration-200">Documents</a>
+                     <a href="/profile" class="text-[#4f46e5] transition-colors duration-200">Profile</a>
+                 </nav>
+             </div>
+            
+             <div class="flex flex-col items-start">
+                 <a href="{{ url_for('auth.logout') }}" class="hover:text-[#4f46e5] transition-colors duration-200 ml-4 font-poppins font-normal">Logout</a>
+             </div>
+
+            <!-- Overlay for mobile menu -->
+            <div id="menu-overlay"
+                class="fixed inset-0 bg-black opacity-0 pointer-events-none transition-opacity duration-300 ease-in-out z-40">
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold mb-2">My Profile</h1>
+            <p class="text-gray-600">Manage your account settings and preferences</p>
+        </div>
+
+        <!-- Profile Content -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Left Column - User Info -->
+            <div class="col-span-1">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 p-6">                    <!-- User Avatar -->
+                    <div class="flex flex-col items-center mb-6">
+                        <div class="user-avatar w-32 h-32 bg-gradient-to-r from-[#4f46e5] to-[#9333ea] rounded-full flex items-center justify-center text-white text-4xl font-bold mb-4">
+                            JD
+                        </div>
+                        <h2 class="user-name text-xl font-bold">John Doe</h2>
+                        <p class="user-email text-gray-500">john.doe@example.com</p>
+                        
+                        <!-- Upload Photo Button -->
+                        <label for="avatar-upload" class="cursor-pointer mt-4">
+                            <div class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm flex items-center transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+                                </svg>
+                                Upload Photo
+                            </div>
+                            <input id="avatar-upload" type="file" accept="image/*" class="hidden" />
+                        </label>
+                    </div>
+                    
+                    <!-- Account Stats -->
+                    <div class="border-t border-gray-100 pt-4">
+                        <h3 class="text-md font-semibold mb-3">Account Information</h3>                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Member Since</span>
+                                <span class="member-since font-medium">May 15, 2025</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Documents</span>
+                                <span class="documents-count font-medium">12</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Storage Used</span>
+                                <span class="storage-used font-medium">45.8 MB</span>
+                            </div>
+                        </div>
+                    </div>
+                      <!-- Danger Zone -->
+                    <div class="border-t border-gray-100 mt-6 pt-6">
+                        <h3 class="text-md font-semibold text-red-500 mb-2">Danger Zone</h3>
+                        <button id="delete-account-btn" class="text-red-500 hover:text-red-700 text-sm font-medium">Delete Account</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Column - Settings Forms -->
+            <div class="col-span-1 md:col-span-2 space-y-8">                <!-- Personal Information Form -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 p-6">
+                    <h2 class="text-xl font-bold mb-6">Personal Information</h2>
+                    <form id="personal-info-form" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="first-name" class="text-sm text-gray-600 block mb-1">First Name</label>
+                                <input type="text" id="first-name" name="first_name" value="John" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label for="last-name" class="text-sm text-gray-600 block mb-1">Last Name</label>
+                                <input type="text" id="last-name" name="last_name" value="Doe" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="email" class="text-sm text-gray-600 block mb-1">Email Address</label>
+                            <input type="email" id="email" name="email" value="john.doe@example.com" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        </div>
+                        <div class="mt-6">
+                            <button type="submit" class="bg-gradient-to-r from-[#4f46e5] to-[#9333ea] text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity">
+                                Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                  <!-- Change Password Form -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 p-6">
+                    <h2 class="text-xl font-bold mb-6">Change Password</h2>
+                    <form id="password-form" class="space-y-4">
+                        <div>
+                            <label for="current-password" class="text-sm text-gray-600 block mb-1">Current Password</label>
+                            <input type="password" id="current-password" name="current_password" placeholder="Enter your current password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label for="new-password" class="text-sm text-gray-600 block mb-1">New Password</label>
+                            <input type="password" id="new-password" name="new_password" placeholder="Enter a new password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label for="confirm-password" class="text-sm text-gray-600 block mb-1">Confirm New Password</label>
+                            <input type="password" id="confirm-password" name="confirm_password" placeholder="Confirm your new password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        </div>
+                        <div class="mt-6">
+                            <button type="submit" class="bg-gradient-to-r from-[#4f46e5] to-[#9333ea] text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity">
+                                Update Password
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                  <!-- Notification Preferences -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 p-6">
+                    <h2 class="text-xl font-bold mb-6">Notification Preferences</h2>
+                    <form id="notification-form" class="space-y-4">
+                        <div class="flex items-center justify-between py-2">
+                            <div>
+                                <h3 class="font-medium">Email Notifications</h3>
+                                <p class="text-sm text-gray-500">Receive email notifications about your account</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" name="email_notifications" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r from-[#4f46e5] to-[#9333ea]"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between py-2">
+                            <div>
+                                <h3 class="font-medium">Push Notifications</h3>
+                                <p class="text-sm text-gray-500">Get notified when documents are processed</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" name="push_notifications" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r from-[#4f46e5] to-[#9333ea]"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between py-2">
+                            <div>
+                                <h3 class="font-medium">Marketing Emails</h3>
+                                <p class="text-sm text-gray-500">Receive updates about new features and tips</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" name="marketing_emails" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r from-[#4f46e5] to-[#9333ea]"></div>
+                            </label>
+                        </div>
+                        <div class="mt-6">
+                            <button type="submit" class="bg-gradient-to-r from-[#4f46e5] to-[#9333ea] text-white px-4 py-2 rounded-md hover:opacity-90 transition-opacity">
+                                Save Preferences
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white shadow-inner py-6">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <p class="text-gray-600 text-sm">©
+                        2025 ChatPDF — Created <a href="https://bagusdevaa.github.io/personal-portofolio/" class="">by
+                            @bagusdeva</a>
+                    </p>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-600 hover:text-[#4f46e5]">Terms</a>
+                    <a href="#" class="text-gray-600 hover:text-[#4f46e5]">Privacy</a>
+                    <a href="#" class="text-gray-600 hover:text-[#4f46e5]">Help</a>
+                </div>
+            </div>
+        </div>
+    </footer>    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+</body>
+</html>

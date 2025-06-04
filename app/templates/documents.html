@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Documents - PDF Assistant</title>
+    <meta name="description" content="View and manage your uploaded PDF documents.">
+    <link rel="icon" type="image/png"
+        href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/svgs/solid/file-pdf.svg">    <link href="{{ url_for('static', filename='css/input.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css" rel="stylesheet">
+    
+    <!-- JavaScript Files -->
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/documents.js') }}"></script>
+</head>
+<body class="bg-gray-50 font-poppins min-h-screen flex flex-col">
+    <!-- Define SVG Gradients -->
+    <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
+        <linearGradient id="myGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#4f46e5" />
+            <stop offset="100%" style="stop-color:#9333ea" />
+        </linearGradient>
+    </svg>
+    
+    <!-- NAVBAR -->
+    <header class="text-gray-600 body-font left-0 w-full z-50 bg-white shadow">
+        <div class="container mx-auto flex p-5 items-center justify-between">
+            <!-- Logo on the left -->
+            <a href="/" class="flex title-font font-poppins font-bold items-center text-gray-900">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="url(#myGradient)" stroke-linecap="round"
+                    stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2 rounded-full"
+                    viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                </svg>
+                <span class="ml-3 text-xl font-poppins font-bold">PDF ASSISTANT</span>
+            </a>
+
+            <!-- Hamburger button on the right -->
+            <button id="menu-toggle" class="md:hidden focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7">
+                    </path>
+                </svg>
+            </button>
+
+            <!-- Mobile menu -->
+            <div id="mobile-menu-container"
+                class="fixed top-0 right-0 w-64 h-full bg-white shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out z-50">
+                <div class="flex flex-col h-full pt-20 px-6">
+                    <!-- Navigation menu -->
+                    <nav id="mobile-menu" class="flex flex-col space-y-4">
+                        <a href="/documents" class="text-[#4f46e5] transition-colors duration-200">Documents</a>
+                        <a href="/profile" class="hover:text-[#4f46e5] transition-colors duration-200">Profile</a>
+                    </nav>                    <!-- Auth buttons -->
+                    <div class="flex flex-col items-start space-y-4 mt-8">
+                        <a href="#" data-action="logout" class="hover:text-[#4f46e5] transition-colors duration-200">Logout</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Desktop navigation -->
+             <div class="flex flex-col">
+                 <nav class="hidden md:flex space-x-5 font-poppins font-normal">
+                     <a href="/documents" class="text-[#4f46e5] transition-colors duration-200">Documents</a>
+                     <a href="/profile" class="hover:text-[#4f46e5] transition-colors duration-200">Profile</a>
+                 </nav>
+             </div>
+              <div class="flex flex-col">
+                 <a href="#" data-action="logout" class="hover:text-[#4f46e5] transition-colors duration-200 ml-4 font-poppins font-normal">Logout</a>
+             </div>
+
+            <!-- Overlay for mobile menu -->
+            <div id="menu-overlay"
+                class="fixed inset-0 bg-black opacity-0 pointer-events-none transition-opacity duration-300 ease-in-out z-40">
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <!-- Page Header -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold mb-2">My Documents</h1>
+                <p class="text-gray-600">Access and manage your uploaded PDF documents</p>
+            </div>
+            <label for="file-upload" class="cursor-pointer mt-4 md:mt-0">
+                <div class="bg-gradient-to-r from-[#4f46e5] to-[#9333ea] text-white px-5 py-3 rounded-lg shadow-md hover:shadow-lg flex items-center transition-all hover:scale-105">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                    Upload New Document
+                </div>
+                <input id="file-upload" type="file" accept=".pdf" class="hidden" />
+            </label>
+        </div>        <!-- Document Filter -->
+        <div class="flex flex-col md:flex-row gap-4 mb-8">
+            <div class="relative flex-grow">
+                <input type="text" placeholder="Search documents..." class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500" id="search-input">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 absolute right-3 top-3.5 text-gray-400">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
+            </div>
+            <select class="px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500" id="sort-select">
+                <option>Sort by: Recent</option>
+                <option>Sort by: Name</option>
+                <option>Sort by: Date Added</option>
+                <option>Sort by: Size</option>
+            </select>
+        </div>        <!-- Document Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Documents will be loaded dynamically via JavaScript -->
+            
+            <!-- Empty State (when no documents) -->
+            <div class="hidden col-span-full">
+                <div class="flex flex-col items-center justify-center bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-12">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="url(#myGradient)" class="w-16 h-16 mb-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m6.75 12H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                    </svg>
+                    <h3 class="text-lg font-medium text-gradient mb-2">No documents yet</h3>
+                    <p class="text-gray-500 text-center mb-6">Upload your first PDF document to start chatting with it</p>
+                    <label for="file-upload-empty" class="cursor-pointer">
+                        <div class="bg-gradient-to-r from-[#4f46e5] to-[#9333ea] text-white px-5 py-3 rounded-lg shadow-md hover:shadow-lg flex items-center transition-all hover:scale-105">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                            Upload New Document
+                        </div>
+                        <input id="file-upload-empty" type="file" accept=".pdf" class="hidden" />
+                    </label>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white shadow-inner py-6">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <p class="text-gray-600 text-sm">©
+                        2025 ChatPDF — Created <a href="https://bagusdevaa.github.io/personal-portofolio/" class="">by
+                            @bagusdeva</a>
+                    </p>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-600 hover:text-[#4f46e5]">Terms</a>
+                    <a href="#" class="text-gray-600 hover:text-[#4f46e5]">Privacy</a>
+                    <a href="#" class="text-gray-600 hover:text-[#4f46e5]">Help</a>
+                </div>
+            </div>
+        </div>
+    </footer>    <!-- Mobile Menu Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileMenuContainer = document.getElementById('mobile-menu-container');
+            const menuOverlay = document.getElementById('menu-overlay');
+
+            // Function to toggle mobile menu
+            function toggleMenu() {
+                const isOpen = mobileMenuContainer.classList.contains('translate-x-0');
+                
+                if (isOpen) {
+                    // Close menu
+                    mobileMenuContainer.classList.remove('translate-x-0');
+                    mobileMenuContainer.classList.add('translate-x-full');
+                    menuOverlay.classList.remove('opacity-50', 'pointer-events-auto');
+                    menuOverlay.classList.add('opacity-0', 'pointer-events-none');
+                } else {
+                    // Open menu
+                    mobileMenuContainer.classList.remove('translate-x-full');
+                    mobileMenuContainer.classList.add('translate-x-0');
+                    menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                    menuOverlay.classList.add('opacity-50', 'pointer-events-auto');
+                }
+            }
+
+            // Event listeners
+            menuToggle.addEventListener('click', toggleMenu);
+            menuOverlay.addEventListener('click', toggleMenu);
+        });
+    </script>
+</body>
+</html>

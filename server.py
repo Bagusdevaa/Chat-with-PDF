@@ -8,6 +8,6 @@ if __name__ == '__main__':
         print(f"Current working directory: {os.getcwd()}")
         print("Starting Flask server...")
         # Menonaktifkan auto-reloader untuk menghindari error socket di Windows
-        app.run(debug=True, use_reloader=False)
+        app.run(debug=True)
     except Exception as e:
         print(f"Error starting server: {str(e)}")

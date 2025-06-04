@@ -1,0 +1,448 @@
+<!doctype html>
+<html class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Prevent caching -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <title>ChatPDF - Chat with your PDF documents</title>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script> -->
+    <meta name="description"
+        content="Upload your PDF documents and chat with them. Get instant answers from your PDFs with our AI-powered chatbot.">
+    <link rel="icon" type="image/png"
+        href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/svgs/solid/file-pdf.svg">
+    <link href="{{ url_for('static', filename='css/input.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
+    <!-- <link href="../static/css/input.css" rel="stylesheet">
+    <link href="../static/css/output.css" rel="stylesheet">
+    <link href="../static/css/gradients.css" rel="stylesheet"> -->
+</head>
+
+<body class="font-poppins bg-gray-50">
+    <!-- Define SVG Gradients -->
+    <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
+        <linearGradient id="myGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#4f46e5" />
+            <stop offset="100%" style="stop-color:#9333ea" />
+        </linearGradient>
+    </svg>
+    <!-- NAVBAR -->
+    <header class="text-gray-600 body-font fixed top-0 left-0 w-full z-50 bg-white shadow">
+        <div class="container mx-auto flex p-5 items-center justify-between">
+            <!-- Logo on the left -->
+            <a class="flex title-font font-poppins items-center text-gray-900">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="url(#myGradient)" stroke-linecap="round"
+                    stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2 rounded-full"
+                    viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                </svg>
+                <span class="ml-3 text-xl font-poppins font-bold">PDF ASSISTANT</span>
+            </a>
+
+            <!-- Hamburger button on the right -->
+            <button id="menu-toggle" class="md:hidden focus:outline-none z-50">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7">
+                    </path>
+                </svg>
+            </button>
+
+            <!-- Mobile menu - slide in from right -->
+            <div id="mobile-menu-container"
+                class="fixed top-0 right-0 w-64 h-full bg-white shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out z-40">
+                <div class="flex flex-col h-full pt-20 px-6">
+                    <!-- Navigation menu -->
+                    <nav id="mobile-menu" class="flex flex-col space-y-4 font-poppins">
+                        <a href="#" class="hover:text-[#4f46e5] transition-colors duration-200">Home</a>
+                        <a href="#features"
+                            class="hover:text-[#4f46e5] transition-colors duration-200 scroll-link">Features</a>
+                        <a href="#how-it-works"
+                            class="hover:text-[#4f46e5] transition-colors duration-200 scroll-link">How It Works</a>
+                    </nav>                    <!-- Auth buttons -->                    <div id="auth-buttons" class="flex flex-col items-start space-y-4 mt-8 font-poppins">
+                        <a href="{{ url_for('auth.login') }}" class="hover:text-[#4f46e5] transition-colors duration-200">Login</a>
+                        <a href="{{ url_for('auth.register') }}"
+                            class="inline-flex items-center bg-gradient-to-r from-[#4f46e5] to-[#9333ea] border-0 py-1 px-3 focus:outline-none hover:opacity-90 rounded text-base text-white">
+                            Sign Up
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Desktop navigation -->
+            <nav class="hidden md:flex items-center space-x-5 font-poppins font-normal">
+                <a href="#" class="hover:text-[#4f46e5] transition-colors duration-200">Home</a>
+                <a href="#features" class="hover:text-[#4f46e5] transition-colors duration-200 scroll-link">Features</a>
+                <a href="#how-it-works" class="hover:text-[#4f46e5] transition-colors duration-200 scroll-link">How It
+                    Works</a>
+            </nav>
+
+            <!-- Desktop auth buttons -->            <div class="hidden md:flex items-center space-x-4 font-poppins font-normal">
+                <a href="{{ url_for('auth.login') }}" class="hover:text-[#4f46e5] transition-colors duration-200">Login</a>
+                <a href="{{ url_for('auth.register') }}"
+                    class="inline-flex items-center bg-gradient-to-r from-[#4f46e5] to-[#9333ea] border-0 py-1 px-3 focus:outline-none hover:opacity-90 hover:scale-105 transition-all rounded text-base text-white">
+                    Sign Up
+                </a>
+            </div>
+
+            <!-- Overlay for mobile menu -->
+            <div id="menu-overlay"
+                class="fixed inset-0 bg-black opacity-0 pointer-events-none transition-opacity duration-300 ease-in-out z-30">
+            </div>
+        </div>
+    </header>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileMenuContainer = document.getElementById('mobile-menu-container');
+            const menuOverlay = document.getElementById('menu-overlay');
+            const mobileLinks = document.querySelectorAll('#mobile-menu a, #auth-buttons a');
+
+            // Toggle menu function
+            function toggleMenu() {
+                // Toggle mobile menu
+                if (mobileMenuContainer.classList.contains('translate-x-full')) {
+                    // Open menu
+                    mobileMenuContainer.classList.remove('translate-x-full');
+                    menuOverlay.classList.remove('opacity-0');
+                    menuOverlay.classList.add('opacity-50');
+                    menuOverlay.classList.remove('pointer-events-none');
+                    document.body.style.overflow = 'hidden'; // Prevent scrolling
+                } else {
+                    // Close menu
+                    mobileMenuContainer.classList.add('translate-x-full');
+                    menuOverlay.classList.remove('opacity-50');
+                    menuOverlay.classList.add('opacity-0');
+                    menuOverlay.classList.add('pointer-events-none');
+                    document.body.style.overflow = ''; // Allow scrolling
+                }
+            }
+
+            // Event listeners
+            menuToggle.addEventListener('click', toggleMenu);
+            menuOverlay.addEventListener('click', toggleMenu);
+
+            // Close menu when links are clicked
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', toggleMenu);
+            });
+
+            // Handle resize
+            function handleResize() {
+                if (window.innerWidth >= 768) {
+                    // Reset mobile menu state
+                    mobileMenuContainer.classList.add('translate-x-full');
+                    menuOverlay.classList.add('opacity-0', 'pointer-events-none');
+                    document.body.style.overflow = '';
+                }
+            }
+
+            window.addEventListener('resize', handleResize);
+
+            // Initialize on page load
+            handleResize();
+        });
+    </script>
+    <!-- NAVBAR END -->
+
+    <!-- HERO  -->
+    <section id="hero" class="relative min-h-screen w-full flex items-center justify-center md:pt-16 pt-32">
+        <!-- Background elements (decorative) -->
+        <div
+            class="absolute top-20 right-0 w-72 h-72 bg-purple-100 rounded-full mix-blend-multiply filter blur-xl opacity-30">
+        </div>
+        <div
+            class="absolute bottom-10 left-10 w-72 h-72 bg-indigo-100 rounded-full mix-blend-multiply filter blur-xl opacity-30">
+        </div>
+
+        <!-- Hero content -->
+        <div class="container mx-auto px-5 flex flex-col md:flex-row items-center z-10">
+            <div
+                class="lg:flex-grow md:w-1/2 lg:pr-24 md:pr-16 flex flex-col md:items-start md:text-left mb-16 md:mb-0 items-center text-center">
+                <h1 class="title-font sm:text-5xl text-4xl mb-4 font-poppins font-bold text-gray-900 animate-fade-in">
+                    Chat with your
+                    PDF
+                </h1>
+                <h1 class="title-font sm:text-5xl text-4xl mb-4 font-poppins font-bold text-gradient animate-fade-in">
+                    documents
+                    instantly
+                </h1>
+                <p class="mb-8 leading-relaxed text-lg font-poppins font-normal animate-fade-in delay-300">Upload your
+                    PDFs
+                    and start asking
+                    questions. Our AI-powered tool
+                    extracts key information and answers your queries with accurate, contextual responses - making
+                    document analysis faster and easier than ever.</p>                <div class="flex justify-center animate-fade-in delay-600">
+                    <a href="{{ url_for('auth.login') }}"
+                        class="inline-flex text-white bg-gradient-to-r from-[#4f46e5] to-[#9333ea] border-0 py-3 px-8 focus:outline-none hover:opacity-90 hover:scale-105 transition-all rounded-lg text-lg font-poppins font-medium">Get
+                        Started</a>
+                </div>
+            </div>
+            <div
+                class="lg:max-w-lg lg:w-full md:w-1/2 w-5/6 transform transition-all duration-500 hover:-translate-y-2 animate-fade-in">
+                <img class="object-cover object-center rounded shadow-xl" alt="PDF Chat Interface"
+                    src="../static/img/hero-image.svg">
+            </div>
+        </div>
+    </section>
+    <!-- HERO END -->
+
+    <!-- FEATURE -->
+    <section id="features" class="text-gray-600 body-font">
+        <div class="container px-5 py-24 mx-auto">
+            <div class="text-center mb-20">
+                <h1 class="sm:text-3xl text-2xl font-poppins font-semibold title-font mb-4 text-gradient">
+                    Key Features </h1>
+                <p class="text-base leading-relaxed xl:w-2/4 lg:w-3/4 mx-auto text-gray-500 font-poppins">
+                    ChatPDF leverages advanced
+                    AI to transform how you interact with PDF documents. Upload, ask questions, and get instant,
+                    accurate answers from your files.</p>
+                <div class="flex mt-6 justify-center">
+                    <div class="w-16 h-1 rounded-full bg-gradient-to-r from-[#4f46e5] to-[#9333ea] inline-flex"></div>
+                </div>
+            </div>
+            <div class="flex flex-wrap sm:-m-4 -mx-4 -mb-10 -mt-4 md:space-y-0 space-y-6">
+                <div class="p-4 md:w-1/3 flex flex-col text-center items-center">
+                    <div
+                        class="flex-grow h-full bg-white bg-opacity-75 px-8 pb-16 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100">
+                        <div class="w-20 h-20 inline-flex items-center justify-center rounded-full flex-shrink-0">
+                            <svg fill="none" stroke="url(#myGradient)" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2" class="w-10 h-10" viewBox="0 0 24 24">
+                                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                            </svg>
+                        </div>
+                        <h2 class="text-lg title-font font-poppins font-semibold text-gradient mb-3">
+                            Instant Answers</h2>
+                        <p class="leading-relaxed text-base font-poppins">Get immediate answers to your
+                            questions about any PDF
+                            document. Our AI understands context and provides accurate, relevant responses without
+                            requiring you to search through pages manually.
+                        </p>
+                    </div>
+                </div>
+                <div class="p-4 md:w-1/3 flex flex-col text-center items-center">
+                    <div
+                        class="flex-grow h-full bg-white bg-opacity-75 px-8 pb-16 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100">
+                        <div class="w-20 h-20 inline-flex items-center justify-center rounded-full flex-shrink-0">
+                            <svg fill="none" stroke="url(#myGradient)" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2" class="w-10 h-10" viewBox="0 0 24 24">
+                                <circle cx="6" cy="6" r="3"></circle>
+                                <circle cx="6" cy="18" r="3"></circle>
+                                <path d="M20 4L8.12 15.88M14.47 14.48L20 20M8.12 8.12L12 12"></path>
+                            </svg>
+                        </div>
+                        <h2 class="text-lg title-font font-poppins font-semibold text-gradient mb-3">
+                            Multi-Document Analysis
+                        </h2>
+                        <p class="leading-relaxed text-base font-poppins">Upload multiple PDFs and chat across
+                            all of them
+                            simultaneously. Compare information, find connections, and extract insights from your entire
+                            document collection at once.
+                        </p>
+                    </div>
+                </div>
+                <div class="p-4 md:w-1/3 flex flex-col text-center items-center">
+                    <div
+                        class="flex-grow h-full bg-white bg-opacity-75 px-8 pb-16 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100">
+                        <div class="w-20 h-20 inline-flex items-center justify-center rounded-full flex-shrink-0">
+                            <svg fill="none" stroke="url(#myGradient)" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2" class="w-10 h-10" viewBox="0 0 24 24">
+                                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        <h2 class="text-lg title-font font-poppins font-semibold text-gradient mb-3">
+                            Secure & Private</h2>
+                        <p class="leading-relaxed text-base font-poppins">Your documents remain private and
+                            secure. We use advanced
+                            encryption and never store the content of your PDFs. Upload confidential reports, legal
+                            documents, and research papers with confidence.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- FEATURE END  -->
+
+    <!-- HOW IT WORKS -->
+    <section id="how-it-works" class="text-gray-600 body-font">
+        <div class="container px-5 py-24 mx-auto">
+            <div class="text-center mb-20">
+                <h1 class="sm:text-3xl text-2xl font-poppins font-semibold title-font mb-4 text-gradient">
+                    How It Works</h1>
+                <p class="text-base leading-relaxed xl:w-2/4 lg:w-3/4 mx-auto text-gray-500 font-poppins">
+                    ChatPDF makes interacting
+                    with your PDF documents as easy as chatting with a knowledgeable assistant. Just follow these simple
+                    steps.</p>
+                <div class="flex mt-6 justify-center">
+                    <div class="w-16 h-1 rounded-full bg-gradient-to-r from-[#4f46e5] to-[#9333ea] inline-flex"></div>
+                </div>
+            </div>
+            <div class="flex flex-wrap -m-4">
+                <div class="p-4 lg:w-1/4 md:w-1/2">
+                    <div class="h-full flex flex-col items-center text-center">
+                        <div
+                            class="flex-grow h-full bg-white bg-opacity-75 px-8 pb-16 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100">
+                            <div class="w-20 h-20 inline-flex items-center justify-center rounded-full flex-shrink-0">
+                                <svg fill="none" stroke="url(#myGradient)" stroke-linecap="round"
+                                    stroke-linejoin="round" stroke-width="2" class="w-10 h-10" viewBox="0 0 24 24">
+                                    <path d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 002-2v-4M17 8l-5-5-5 5M12 4.2v10.3"></path>
+                                </svg>
+                            </div>
+                            <h2 class="text-lg title-font font-poppins font-semibold text-gradient mb-3">
+                                1. Upload</h2>
+                            <p class="leading-relaxed text-base font-poppins">Upload your PDF documents to our
+                                secure platform with a
+                                simple drag and drop.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 lg:w-1/4 md:w-1/2">
+                    <div class="h-full flex flex-col items-center text-center">
+                        <div
+                            class="flex-grow h-full bg-white bg-opacity-75 px-8 pb-16 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100">
+                            <div class="w-20 h-20 inline-flex items-center justify-center rounded-full flex-shrink-0">
+                                <svg fill="none" stroke="url(#myGradient)" stroke-linecap="round"
+                                    stroke-linejoin="round" stroke-width="2" class="w-10 h-10" viewBox="0 0 24 24">
+                                    <path
+                                        d="M9 12h6m-6-4h6m2 8H7a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <h2 class="text-lg title-font font-poppins font-semibold text-gradient mb-3">
+                                2. Process</h2>
+                            <p class="leading-relaxed text-base font-poppins">Our AI analyzes your document,
+                                understanding its
+                                content, structure, and context.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 lg:w-1/4 md:w-1/2">
+                    <div class="h-full flex flex-col items-center text-center">
+                        <div
+                            class="flex-grow h-full bg-white bg-opacity-75 px-8 pb-16 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100">
+                            <div class="w-20 h-20 inline-flex items-center justify-center rounded-full flex-shrink-0">
+                                <svg fill="none" stroke="url(#myGradient)" stroke-linecap="round"
+                                    stroke-linejoin="round" stroke-width="2" class="w-10 h-10" viewBox="0 0 24 24">
+                                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                            </div>
+                            <h2 class="text-lg title-font font-poppins font-semibold text-gradient mb-3">
+                                3. Ask</h2>
+                            <p class="leading-relaxed text-base font-poppins">Ask questions about your document
+                                in natural language
+                                as if you're chatting with a colleague.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 lg:w-1/4 md:w-1/2">
+                    <div class="h-full flex flex-col items-center text-center">
+                        <div
+                            class="flex-grow h-full bg-white bg-opacity-75 px-8 pb-16 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-100">
+                            <div class="w-20 h-20 inline-flex items-center justify-center rounded-full flex-shrink-0">
+                                <svg fill="none" stroke="url(#myGradient)" stroke-linecap="round"
+                                    stroke-linejoin="round" stroke-width="2" class="w-10 h-10" viewBox="0 0 24 24">
+                                    <path
+                                        d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <h2 class="text-lg title-font font-poppins font-semibold text-gradient mb-3">
+                                4. Get Answers</h2>
+                            <p class="leading-relaxed text-base font-poppins">Receive instant, accurate answers
+                                with references to
+                                the specific parts of your document.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>            <div class="flex justify-center mt-12">
+                <a href="{{ url_for('auth.login') }}"
+                    class="inline-flex text-white bg-gradient-to-r from-[#4f46e5] to-[#9333ea] border-0 py-2 px-6 focus:outline-none hover:opacity-90 hover:scale-105 transition-all rounded text-lg font-poppins-medium">Try
+                    It Now</a>
+            </div>
+        </div>
+    </section>
+    <!-- HOW IT WORKS END -->
+
+    <!-- FOOTER  -->
+    <footer class="bg-white shadow-inner py-6">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <p class="text-gray-600 text-sm">©
+                        2025 ChatPDF — Created <a href="https://bagusdevaa.github.io/personal-portofolio/" class="">by
+                            @bagusdeva</a>
+                    </p>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-600 hover:text-[#4f46e5]">Terms</a>
+                    <a href="#" class="text-gray-600 hover:text-[#4f46e5]">Privacy</a>
+                    <a href="#" class="text-gray-600 hover:text-[#4f46e5]">Help</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- FOOTER END  -->
+
+    <!-- Scroll Animation Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Add reveal classes to elements
+            document.querySelectorAll('#features .flex-grow').forEach(function (el, i) {
+                el.classList.add('reveal');
+                if (i % 3 === 0) {
+                    el.classList.add('reveal-left');
+                } else if (i % 3 === 1) {
+                    el.classList.add('reveal-bottom');
+                } else {
+                    el.classList.add('reveal-right');
+                }
+            });
+
+            document.querySelectorAll('#how-it-works .flex-grow').forEach(function (el, i) {
+                el.classList.add('reveal');
+                el.classList.add('reveal-bottom');
+            });
+
+            // Feature and section titles
+            document.querySelectorAll('section .text-center h1').forEach(function (el) {
+                el.classList.add('reveal', 'reveal-bottom');
+            });
+
+            document.querySelectorAll('section .text-center p').forEach(function (el) {
+                el.classList.add('reveal', 'reveal-bottom');
+            });
+
+            // Scroll reveal function
+            function checkScroll() {
+                const elements = document.querySelectorAll('.reveal');
+                const windowHeight = window.innerHeight;
+                const revealPoint = 150;
+
+                elements.forEach(element => {
+                    const revealTop = element.getBoundingClientRect().top;
+                    if (revealTop < windowHeight - revealPoint) {
+                        element.classList.add('active');
+                    } else {
+                        element.classList.remove('active');
+                    }
+                });
+            }
+
+            // First check when page loads
+            checkScroll();        // Check on scroll
+            window.addEventListener('scroll', checkScroll);
+        });
+    </script>      <!-- JavaScript Modules with aggressive cache busting -->
+    <script src="{{ url_for('static', filename='js/api.js') }}?v=20250603030001&timestamp={{ timestamp }}"></script>
+    <script src="{{ url_for('static', filename='js/landing.js') }}?v=20250603030001&timestamp={{ timestamp }}"></script>
+</body>
+
+</html>
