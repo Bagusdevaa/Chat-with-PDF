@@ -176,16 +176,14 @@ class DocumentHandler {
                 await this.downloadDocument(documentId);
                 break;
         }
-    }
-
-    /**
+    }    /**
      * Start chat with document
      * @param {string} documentId - Document ID
      */
     async startChat(documentId) {
         try {
-            // Create new conversation for the document
-            const response = await window.api.createConversation(parseInt(documentId));
+            // Use getOrCreateConversation to preserve chat history
+            const response = await window.api.getOrCreateConversation(parseInt(documentId));
             
             if (response.status === 'success') {
                 // Redirect to conversation page
@@ -197,7 +195,7 @@ class DocumentHandler {
             console.error('Failed to start chat:', error);
             this.showError('Failed to start conversation');
         }
-    }    /**
+    }/**
      * Delete document
      * @param {string} documentId - Document ID
      */

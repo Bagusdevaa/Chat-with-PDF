@@ -1,14 +1,47 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash
+from flask import Blueprint, render_template, redirect, url_for, request, flash, make_response, send_from_directory
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.models.documents import Document
 from app.models.conversation import Conversation
 from app.models.user import User
+import time
+import os
 
 main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    return render_template('landing.html')
+    # Add timestamp for cache busting
+    timestamp = str(int(time.time()))
+    response = make_response(render_template('landing.html', timestamp=timestamp))
+    
+    # Add aggressive no-cache headers for landing page
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    response.headers['Last-Modified'] = 'Mon, 01 Jan 1990 00:00:00 GMT'
+    
+    return response
+
+@main.route('/static/js/<path:filename>')
+def serve_js_with_no_cache(filename):
+    """Serve JavaScript files with no-cache headers"""
+    from flask import current_app
+    
+    # Get the static folder path
+    static_folder = current_app.static_folder
+    js_folder = os.path.join(static_folder, 'js')
+    
+    # Create response with the JavaScript file
+    response = make_response(send_from_directory(js_folder, filename))
+    
+    # Add aggressive no-cache headers
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate, max-age=0'
+    response.headers['Pragma'] = 'no-cache' 
+    response.headers['Expires'] = '0'
+    response.headers['Last-Modified'] = 'Mon, 01 Jan 1990 00:00:00 GMT'
+    response.headers['Content-Type'] = 'application/javascript'
+    
+    return response
 
 @main.route('/about')
 def about():
@@ -17,6 +50,10 @@ def about():
 @main.route('/documents')
 def documents():
     return render_template('documents.html')
+
+@main.route('/profile')
+def profile():
+    return render_template('profile.html')
 
 @main.route('/conversation/<int:conversation_id>')
 def conversation(conversation_id):
@@ -51,13 +88,7 @@ def chat_with_document(document_id):
             from app import db
             db.session.add(conversation)
             db.session.commit()
-        
         return redirect(url_for('main.conversation', conversation_id=conversation.id))
     except Exception as e:
         flash('Failed to start conversation', 'error')
         return redirect(url_for('main.documents'))
-
-@main.route('/profile')
-def profile():
-    # Placeholder route for profile page
-    return render_template('profile.html')

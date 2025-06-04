@@ -38,11 +38,24 @@ def create_app():
     # Set up login manager configuration
     login_manager.login_view = 'auth.login'
     login_manager.login_message_category = 'info'
-    
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(int(user_id))
-      # Register blueprints
+    
+    # Add no-cache headers for static files to prevent caching issues
+    @app.after_request
+    def add_no_cache_headers(response):
+        # Add no-cache headers for HTML pages and JavaScript files
+        if (response.content_type and 
+            ('text/html' in response.content_type or 
+             'application/javascript' in response.content_type or
+             'text/javascript' in response.content_type)):
+            response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+            response.headers['Pragma'] = 'no-cache'
+            response.headers['Expires'] = '0'
+        return response
+    
+    # Register blueprints
     app.register_blueprint(main)
     app.register_blueprint(auth)
     app.register_blueprint(api, url_prefix='/api')

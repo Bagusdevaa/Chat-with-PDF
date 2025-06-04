@@ -301,10 +301,8 @@ class ConversationHandler {
             this.isLoading = false;
             this.updateSendButton(false);
         }
-    }
-
-    /**
-     * Create a new conversation
+    }    /**
+     * Create a new conversation (or use existing one)
      */
     async createConversation() {
         if (!this.documentId) {
@@ -312,9 +310,10 @@ class ConversationHandler {
         }
 
         try {
-            const response = await this.api.createConversation(this.documentId);
+            // Use getOrCreateConversation to preserve chat history
+            const response = await this.api.getOrCreateConversation(this.documentId);
             
-            if (response.success) {
+            if (response.status === 'success') {
                 this.conversationId = response.data.id;
                 
                 // Update URL without reload

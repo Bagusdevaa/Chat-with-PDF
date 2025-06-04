@@ -4,6 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Prevent caching -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
     <title>ChatPDF - Chat with your PDF documents</title>
     <!-- <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script> -->
     <meta name="description"
@@ -58,9 +64,7 @@
                             class="hover:text-[#4f46e5] transition-colors duration-200 scroll-link">Features</a>
                         <a href="#how-it-works"
                             class="hover:text-[#4f46e5] transition-colors duration-200 scroll-link">How It Works</a>
-                    </nav>
-
-                    <!-- Auth buttons -->                    <div id="auth-buttons" class="flex flex-col items-start space-y-4 mt-8 font-poppins">
+                    </nav>                    <!-- Auth buttons -->                    <div id="auth-buttons" class="flex flex-col items-start space-y-4 mt-8 font-poppins">
                         <a href="{{ url_for('auth.login') }}" class="hover:text-[#4f46e5] transition-colors duration-200">Login</a>
                         <a href="{{ url_for('auth.register') }}"
                             class="inline-flex items-center bg-gradient-to-r from-[#4f46e5] to-[#9333ea] border-0 py-1 px-3 focus:outline-none hover:opacity-90 rounded text-base text-white">
@@ -173,9 +177,8 @@
                     and start asking
                     questions. Our AI-powered tool
                     extracts key information and answers your queries with accurate, contextual responses - making
-                    document analysis faster and easier than ever.</p>
-                <div class="flex justify-center animate-fade-in delay-600">
-                    <a href="/signup"
+                    document analysis faster and easier than ever.</p>                <div class="flex justify-center animate-fade-in delay-600">
+                    <a href="{{ url_for('auth.login') }}"
                         class="inline-flex text-white bg-gradient-to-r from-[#4f46e5] to-[#9333ea] border-0 py-3 px-8 focus:outline-none hover:opacity-90 hover:scale-105 transition-all rounded-lg text-lg font-poppins font-medium">Get
                         Started</a>
                 </div>
@@ -359,9 +362,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="flex justify-center mt-12">
-                <a href="/signup"
+            </div>            <div class="flex justify-center mt-12">
+                <a href="{{ url_for('auth.login') }}"
                     class="inline-flex text-white bg-gradient-to-r from-[#4f46e5] to-[#9333ea] border-0 py-2 px-6 focus:outline-none hover:opacity-90 hover:scale-105 transition-all rounded text-lg font-poppins-medium">Try
                     It Now</a>
             </div>
@@ -438,11 +440,9 @@
             checkScroll();        // Check on scroll
             window.addEventListener('scroll', checkScroll);
         });
-    </script>
-    
-    <!-- JavaScript Modules -->
-    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/landing.js') }}"></script>
+    </script>      <!-- JavaScript Modules with aggressive cache busting -->
+    <script src="{{ url_for('static', filename='js/api.js') }}?v=20250603030001&timestamp={{ timestamp }}"></script>
+    <script src="{{ url_for('static', filename='js/landing.js') }}?v=20250603030001&timestamp={{ timestamp }}"></script>
 </body>
 
 </html>
