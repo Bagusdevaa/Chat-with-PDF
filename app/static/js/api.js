@@ -33,6 +33,13 @@ class APIHandler {
     }
 
     /**
+     * Clear authentication (alias for removeToken)
+     */
+    clearAuth() {
+        this.removeToken();
+    }
+
+    /**
      * Get authentication headers
      * @returns {Object} Headers object
      */
@@ -130,6 +137,33 @@ class APIHandler {
     }
 
     /**
+     * PUT request
+     * @param {string} endpoint - API endpoint
+     * @param {Object} data - Request body data
+     * @returns {Promise} Response promise
+     */
+    async put(endpoint, data) {
+        return this.request(endpoint, {
+            method: 'PUT',
+            body: JSON.stringify(data)
+        });
+    }
+
+    /**
+     * Upload request with file data
+     * @param {string} endpoint - API endpoint
+     * @param {FormData} formData - Form data
+     * @returns {Promise} Upload response
+     */
+    async upload(endpoint, formData) {
+        return this.request(endpoint, {
+            method: 'POST',
+            headers: this.getFormHeaders(),
+            body: formData
+        });
+    }
+
+    /**
      * DELETE request
      * @param {string} endpoint - API endpoint
      * @returns {Promise} Response promise
@@ -137,8 +171,7 @@ class APIHandler {
     async delete(endpoint) {
         return this.request(endpoint, {
             method: 'DELETE'
-        });
-    }
+        });    }
 
     // ========== AUTHENTICATION ENDPOINTS ==========
 
@@ -150,7 +183,7 @@ class APIHandler {
      */
     async login(email, password) {
         try {
-            const response = await this.post('/login', {
+            const response = await this.post('/api/auth/login', {
                 email,
                 password
             });
@@ -164,16 +197,14 @@ class APIHandler {
             console.error('Login failed:', error);
             throw error;
         }
-    }
-
-    /**
+    }    /**
      * Register new user
      * @param {Object} userData - User registration data
      * @returns {Promise} Registration response
      */
     async register(userData) {
         try {
-            const response = await this.post('/register', userData);
+            const response = await this.post('/api/auth/register', userData);
             return response;
         } catch (error) {
             console.error('Registration failed:', error);

@@ -26,12 +26,10 @@ class ProfileHandler {
             console.error('Profile initialization error:', error);
             this.showNotification('Failed to load profile', 'error');
         }
-    }
-
-    async loadUserProfile() {
+    }    async loadUserProfile() {
         try {
-            // Get user profile from API (you'll need to implement this endpoint)
-            const response = await this.api.get('/auth/profile');
+            // Get user profile from API
+            const response = await this.api.get('/api/auth/profile');
             this.currentUser = response.user;
         } catch (error) {
             console.error('Failed to load user profile:', error);
@@ -186,10 +184,8 @@ class ProfileHandler {
                 first_name: formData.get('first_name') || document.getElementById('first-name').value,
                 last_name: formData.get('last_name') || document.getElementById('last-name').value,
                 email: formData.get('email') || document.getElementById('email').value
-            };
-
-            // Update profile via API
-            await this.api.put('/auth/profile', data);
+            };            // Update profile via API
+            await this.api.put('/api/auth/profile', data);
             
             // Update local user data
             this.currentUser = { ...this.currentUser, ...data };
@@ -235,7 +231,7 @@ class ProfileHandler {
                 new_password: newPassword
             };
 
-            await this.api.put('/auth/change-password', data);
+            await this.api.put('/api/auth/change-password', data);
             
             // Clear form
             e.target.reset();
@@ -266,10 +262,8 @@ class ProfileHandler {
 
         try {
             const formData = new FormData();
-            formData.append('avatar', file);
-
-            // Upload avatar
-            const response = await this.api.upload('/auth/avatar', formData);
+            formData.append('avatar', file);            // Upload avatar
+            const response = await this.api.upload('/api/auth/avatar', formData);
             
             // Update UI with new avatar
             this.currentUser.avatar = response.avatar_url;
@@ -298,7 +292,7 @@ class ProfileHandler {
                 marketing_emails: formData.has('marketing_emails')
             };
 
-            await this.api.put('/auth/notification-preferences', preferences);
+            await this.api.put('/api/auth/notification-preferences', preferences);
             
             this.showNotification('Notification preferences updated!', 'success');
         } catch (error) {
@@ -319,7 +313,7 @@ class ProfileHandler {
         if (!confirmed) return;
 
         try {
-            await this.api.delete('/auth/account');
+            await this.api.delete('/api/auth/account');
             
             // Clear local storage and redirect
             this.api.clearAuth();

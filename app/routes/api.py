@@ -1,10 +1,6 @@
 from flask import Blueprint, request, jsonify, current_app
 from flask_login import current_user, login_required
 from flask_jwt_extended import jwt_required, get_jwt_identity
-import os
-import time
-import uuid
-import datetime
 from app.models.pdf_processor import PDFProcessor
 from app.models.documents import Document
 from app.models.conversation import Conversation
@@ -14,6 +10,8 @@ from app import db, response
 from app.controller import usercontroller
 from werkzeug.utils import secure_filename
 from datetime import datetime, timezone
+import os
+import uuid
 
 api = Blueprint('api', __name__)
 
@@ -42,7 +40,13 @@ def get_profile():
     """Get user profile information"""
     try:
         user_id = get_jwt_identity()
+        print(f"JWT user_id: {user_id}")  # Debug log
+        
+        if not user_id:
+            return response.error_response('User not authenticated', 401)
+            
         user = User.query.get(user_id)
+        print(f"User found: {user}")  # Debug log
         
         if not user:
             return response.error_response('User not found', 404)
@@ -54,7 +58,7 @@ def get_profile():
         total_size = db.session.query(db.func.sum(Document.file_size)).filter_by(user_id=user.id).scalar() or 0
         storage_used = f"{total_size / (1024 * 1024):.1f} MB"
         
-        return response.success_response({
+        user_data = {
             'user': {
                 'id': user.id,
                 'first_name': user.first_name,
@@ -65,10 +69,14 @@ def get_profile():
                 'documents_count': documents_count,
                 'storage_used': storage_used
             }
-        }, 'Profile retrieved successfully', 200)
+        }
+        
+        print(f"Returning user data: {user_data}")  # Debug log
+        return response.success_response(user_data, 'Profile retrieved successfully', 200)
         
     except Exception as e:
-        return response.error_response(str(e))
+        print(f"Error in get_profile: {str(e)}")  # Debug log
+        return response.error_response(f'Server error: {str(e)}', 500)
 
 @api.route('/auth/profile', methods=['PUT'])
 @jwt_required()
@@ -127,13 +135,68 @@ def change_password():
             return response.error_response('Current password is incorrect', 400)
         
         # Set new password
-        user.set_password(data['new_password'])
+        user.set_password(data['new_password'])        
         user.updated_at = datetime.now(timezone.utc)
         db.session.commit()
         
         return response.success_response({}, 'Password updated successfully', 200)
         
     except Exception as e:
+        return response.error_response(str(e))
+
+@api.route('/auth/notification-preferences', methods=['PUT'])
+@jwt_required()
+def update_notification_preferences():
+    """Update user notification preferences"""
+    try:
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+        
+        if not user:
+            return response.error_response('User not found', 404)
+        
+        data = request.json
+        
+        if not data:
+            return response.error_response('No data provided', 400)
+        
+        # For now, just return success. 
+        # In a real app, you'd store these preferences in the database
+        # user.email_notifications = data.get('email_notifications', False)
+        # user.push_notifications = data.get('push_notifications', False)
+        # user.marketing_emails = data.get('marketing_emails', False)
+        # user.updated_at = datetime.now(timezone.utc)
+        # db.session.commit()
+        
+        return response.success_response({}, 'Notification preferences updated successfully', 200)
+        
+    except Exception as e:
+        return response.error_response(str(e))
+
+@api.route('/auth/account', methods=['DELETE'])
+@jwt_required()
+def delete_account():
+    """Delete user account and all associated data"""
+    try:
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+        
+        if not user:
+            return response.error_response('User not found', 404)
+        
+        # Delete user's documents and conversations (cascade delete should handle this)
+        documents = Document.query.filter_by(user_id=user.id).all()
+        for doc in documents:
+            db.session.delete(doc)
+        
+        # Delete the user
+        db.session.delete(user)
+        db.session.commit()
+        
+        return response.success_response({}, 'Account deleted successfully', 200)
+        
+    except Exception as e:
+        db.session.rollback()
         return response.error_response(str(e))
 
 # ============ HEALTH CHECK ============

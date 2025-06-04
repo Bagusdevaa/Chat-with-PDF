@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash, make_response, send_from_directory
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_login import login_required
 from app.models.documents import Document
 from app.models.conversation import Conversation
 from app.models.user import User
@@ -52,6 +53,7 @@ def documents():
     return render_template('documents.html')
 
 @main.route('/profile')
+@login_required
 def profile():
     return render_template('profile.html')
 
